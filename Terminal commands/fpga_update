@@ -1,0 +1,10 @@
+cd ~/t-crest
+./misc/gitall pull
+cd misc
+cp build.cfg.dist build.cfg
+./build.sh
+cd ..
+./misc/build.sh newlib
+cd patmos/doc
+make
+cd

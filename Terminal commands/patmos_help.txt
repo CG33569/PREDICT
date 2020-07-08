@@ -1,0 +1,108 @@
+##################### Update and build repositories #####################
+cd ~/t-crest
+./misc/gitall pull
+./misc/build.sh
+./misc/build.sh newlib
+# if the last commad gives errors
+cd misc
+# edit build.cfg, set ROOT_DIR and INSTALL_DIR
+cp build.cfg.dist build.cfg
+./build.sh
+
+# come back to the t-crest directory and delete the folder /newlib/build
+./misc/build.sh newlib
+
+# for some reasons, running ./build.sh from the misc folder does not bring errors
+# but running ./misc/build.sh from the t-crest directoy does
+# what do I do with thiiiiiiis
+
+# select board
+make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=altde2-115
+make BOARD=altde2-115 gen synth
+
+
+# Log of failed compiled things:
+
+make
+# some full-compiling problems:
+[warn] There may be incompatibilities among your library dependencies.
+
+
+# compiling patmos part by part
+make tools
+# worked without problem
+make rom 
+make: *** No rule to make target 'rom'.  Stop.
+make comp 
+make crom 
+make sim 
+make hsim 
+
+# this one has a lot of errors
+make test
+
+##################### Board-computer communication #####################
+make patmos 
+# when fine most of the time
+# then it failed on the connection of the FPGA: JTAG does not match
+# Error (213019): Can't scan JTAG chain. Error code 87.
+make synth 
+# this one suprisingly worked :O
+make config 
+# failed on the same procedure as the FPGA
+make clean 
+
+# Running the same thing on the other board
+export BOARD=de10-nano
+make tools
+# worked without problem
+make rom 
+make: *** No rule to make target 'rom'.  Stop.
+make comp 
+make crom 
+make sim 
+make hsim 
+make test
+make synth 
+# this one suprisingly worked :O
+make config 
+# failed on the same procedure as the FPGA
+make clean 
+
+# For some reason, make config does not work properly with de10-nano
+
+
+# Other stuff to try out
+cd ~/t-crest/patmos/c/apps/hello
+patmos-clang -o hello.elf hello.c
+cd ~/t-crest/patmos/
+cd # it is necessary to compile somewhere???
+make app APP=appname
+# For an example see the hello app, which can be built and downloaded with:
+make app config download APP=hello
+
+# Fixing the hardware connection with the board:
+#add the programming user account
+sudo usermod -a -G dialout user
+#now log out from Ubuntu and login again
+jtagconfig
+#try out the jtag chain
+sudo killall -9 jtagd
+#kill and verify that the process is not running
+jtagconfig
+#re-run this command until it has no errors
+#re run the whole project synth again, for fucks shake
+make config
+#and re-run this shit until it downloads properly
+
+##################### Building c apps #####################
+# go to the folder where the .c code is
+cd ~/t-crest/patmos/c/apps/hello
+# convert from c to elf 
+patmos-clang -o ~/t-crest/patmos/tmp/hello.elf hello.c
+# within the same folder: patmos-clang -o hello.elf hello.c
+
+# compile app (it has the same name as the .c file)
+cd ~/t-crest/patmos
+make app APP=hello
+make BOOTAPP=bootable-bootloader APP=hello tools comp download
