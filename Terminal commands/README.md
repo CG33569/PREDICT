@@ -108,7 +108,44 @@ If any errors were given associated to the JTAG, rerun the jtagconfig commands.
 
 ### Building c code for PATMOS ###
 
-_Still on progress_
+1. Create a folder for it on the directory ~/Your patmos location here/c/apps.
+
+
+*A simple .c file*
+
+
+2. Place in that folder your .c code and all its dependencies and .sh libraries.
+
+
+3. Convert the .c code in an application. The ouput is an .elf file that must be located on the /tmp/ folder.
+```
+cd ~/Your patmos location here/patmos/c/apps/your folder here
+patmos-clang -o ~/t-crest/patmos/tmp/hello.elf hello.c
+```
+
+Now the name of the app should be the same as the .elf file and it's the one that is going to be downloaded on the board.
+
+
+*More complex apps*
+
+
+2. Place in the folder the .c files, .sh libraries and a Makefile.
+
+
+3. Build the complete folder. Take the other apps as examples. The Makefile specifies a concrete set of variables and has different options (e.g. compile, sim, clean,...). In case of using an example app, check which command is the one that converts to .elf file after compiling. 
+```
+cd ~/Your patmos location here/patmos/c/apps/your folder here
+make
+```
+The next screenshot shows the content and commands to build the example app tte-flight:
+* Top-left: application files.
+* Bottom-left: command terminal.
+* Right: Makefile content.
+
+![](info/tte_flight.png)
+
+
+4. _I'm lost from here how to generate fix these ones when errors happen_
 
 
 ### Downloading c code ###
@@ -138,6 +175,7 @@ On the picture: top cable -> USB cable to download patmos, bottom cable -> UART-
 5. Download the built app (.elf file) on the board.
 
 ```
+cd ~/Your patmos location here/patmos
 make BOOTAPP=bootable-bootloader APP=hello_puts tools download
 ```
 
