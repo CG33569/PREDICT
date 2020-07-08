@@ -2,11 +2,14 @@
 // #include <Wire.h>               //Include the Wire.h library so we can communicate with the gyro
 #include <EEPROM.h>             //Include the EEPROM.h library so we can store information onto the EEPROM
 #include <stdio.h>
-//#include <string.h>
-//#include <stdlib.h>
 #include <machine/patmos.h>
-//#include "libcorethread/corethread.h"
-//#include "libmp/mp.h"
+#include <machine/time.h>
+#include <machine/spm.h>
+#include <machine/rtc.h>
+#include <machine/spm.h>
+
+
+volatile _SPM int *readdata_0_ptr          = (volatile _SPM int *) 0xF00b0000;
 
 //LEDs
 #define LED ( *( ( volatile _IODEV unsigned * ) PATMOS_IO_LED ) )
@@ -53,6 +56,14 @@ unsigned long timer, timer_1, timer_2, timer_3, timer_4, current_time;
 float gyro_pitch, gyro_roll, gyro_yaw;
 float gyro_roll_cal, gyro_pitch_cal, gyro_yaw_cal;
 
+unsigned int micros()
+{
+  return get_cpu_usecs();
+}
+unsigned int millis()
+{
+  return 1000*get_cpu_usecs();
+}
 //Writes to i2c, returns -1 if there was an error, 0 if succeded
 int i2c_write(unsigned char chipaddress, unsigned char regaddress, unsigned char data){
   I2C = ((((unsigned int) data & 0x000000FF) << 16) | (((unsigned int) regaddress & 0x000000FF) << 8) | (((unsigned int) chipaddress & 0x0000007F) << 1)) & 0xFFFFFFFE;
@@ -475,7 +486,7 @@ for(;;){
   
   TWBR = 12;                      //Set the I2C clock speed to 400kHz. /////change later for atlterra clock speed
   
-  #if F_CPU == 16000000L          //If the clock speed is 16MHz include the next code line when compiling
+  #if F_CPU == _CLOCKS_PER_SEC_          //If the clock speed is 16MHz include the next code line when compiling
     clockspeed_ok = 1;            //Set clockspeed_ok to 1
   #endif                          //End of if statement
 
