@@ -169,6 +169,19 @@ On the picture: top cable -> USB cable to download patmos, bottom cable -> UART-
 ![](info/de2115_laptop.jpg)
 
 * For the DE10-nano: there is no port, so the Quartus Prime project has designed an UART connection through the I/O pins. So it is necessary a special adapter to connect the laptop to the board.
+* WARNING!: download patmos on this board BEFORE connecting its UART to the laptop. Otherwise a shortcout could happen.
+* Follow the instructions of the README.md file on the directiory /patmos/hardware/quartus/de10-nano to set up the switches and pins for the UART.
+* Connect the UART pins to the adapter. Here there is an example:
+```
+Pin+Number | Wire colour | Adapter
+------------------------------------
+    rxd 1  |    white    | rxd
+    txd 2  |    grey     | txd
+   3.3V 29 |    purple   | VBUS
+    GND 30 |    blue     | GND
+```
+![](info/de10_uart.jpg)
+
 
 4. Connect the board(s) to the laptop. If the connection has been successful, the directory /dev/ a special file "ttyUSB0" should have been generated. If not, check steps 1 and 2 and plug the board again.
 
