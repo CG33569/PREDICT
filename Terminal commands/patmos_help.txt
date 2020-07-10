@@ -76,7 +76,6 @@ make clean
 cd ~/t-crest/patmos/c/apps/hello
 patmos-clang -o hello.elf hello.c
 cd ~/t-crest/patmos/
-cd # it is necessary to compile somewhere???
 make app APP=appname
 # For an example see the hello app, which can be built and downloaded with:
 make app config download APP=hello
@@ -100,9 +99,19 @@ make config
 cd ~/t-crest/patmos/c/apps/hello
 # convert from c to elf 
 patmos-clang -o ~/t-crest/patmos/tmp/hello.elf hello.c
-# within the same folder: patmos-clang -o hello.elf hello.c
+# within the same folder: 
+patmos-clang -o hello.elf hello.c
+
+## Note: convert the c code to elf in the tmp folder if you want use on the download process a "boot" on the board and/or it's a single c file
+## Note: convert it on the same folder if you want to use multiple c codes and a MakeFile is necessary
 
 # compile app (it has the same name as the .c file)
 cd ~/t-crest/patmos
-make app APP=hello
-make BOOTAPP=bootable-bootloader APP=hello tools comp download
+# for elf files located on the tmp folder
+make BOOTAPP=bootable-bootloader APP=hello_MPU6050 tools comp
+
+# making an elf file for a complete folder with multiple c files and a MakeFile
+make app APP=de10-nano
+
+# downloading an elf file
+make BOOTAPP=bootable-bootloader APP=de10-nano tools comp download
