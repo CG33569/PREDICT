@@ -145,7 +145,17 @@ The next screenshot shows the content and commands to build the example app tte-
 ![](info/tte_flight.png)
 
 
-4. _I'm lost from here how to generate fix these ones when errors happen_
+4. Further development:
+* In this repository there are two c apps included: de10-nano and de10-IMU.
+* de10-nano is an example app from the original patmos repository to test the communication with an IMU. To use it on the board (after downloading patmos on it):
+![](info/de10_IMU.jpg)
+```
+cd ~/t-crest/patmos
+make app APP=de10-nano download
+```
+![](info/de10-nano_app.png)
+
+* de10-IMU is our own first c app, to start programming the flight controller and is based on the previous one.
 
 
 ### Downloading c code ###
@@ -197,4 +207,6 @@ make BOOTAPP=bootable-bootloader APP=hello_puts tools download
 In case of error:
 * _Port not found_ : review the rules and UART-USB connection.
 * _Port denied_ : review the user access.
-* Other errors: maybe it's a hardware problem change cable or re-try with another board if the two previous points are OK.
+* _Receiver did not reply correctly (expected 62 got 10)_ : this can happen with any other numbers for "expected" and "got". Once a c app has been successfully downloaded, the UART is usually no longer receptive to download apps. To fix this, re-plug the USB-UART to the laptop (maybe more than once). If after some tries, it still does not work, re-boot the FPGA and reload patmos and the app.
+* (After downloading process) _Exception Timeout_: problem with the bus wires. The laptop was able to communicate with the bus, but the info did not reach the board. Review the pins/cable adapter and re-boot the FPGA.
+* Other errors: maybe it's a hardware problem change cable or re-try with another board if the two previous points are OK. For more info, review the pins assignment and the corresponding manuals.
