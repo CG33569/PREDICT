@@ -1,4 +1,4 @@
-MAIN?=main_MPU6050
+MAIN?=IMU-rpy
 #MAIN?=blinking
 
 # This is the trivial Hello World example, distributed over two .c files

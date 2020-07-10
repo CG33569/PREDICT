@@ -2,6 +2,7 @@
 //#include <string.h>
 //#include <stdlib.h>
 #include <machine/patmos.h>
+#include <math.h>
 //#include "libcorethread/corethread.h"
 //#include "libmp/mp.h"
 
@@ -90,6 +91,10 @@ int main(int argc, char **argv)
   unsigned int GYRO_Y_L = 0;
   unsigned int GYRO_Z_H = 0;
   unsigned int GYRO_Z_L = 0;
+  
+  double input =0.5;
+  float ab;
+  ab = sin(2.5 * 0.000001066);
 
   signature = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_WHO_AM_I);
   printf("Signature = 0x%.2X\n", signature);
@@ -100,7 +105,7 @@ int main(int argc, char **argv)
   printf("PWR_MGMT_1 = 0x%.2X\n", i2c_read(MPU6050_I2C_ADDRESS, MPU6050_PWR_MGMT_1));
 
   //for (int i = 0; i < 5; i++) {
-  for (;;) {
+  for (int j=0;j<2;j++) {
     blink_once();
     ACCEL_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_H);
     ACCEL_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_H);
@@ -124,6 +129,9 @@ int main(int argc, char **argv)
     printf("GYRO_X  = 0x%.2X%.2X (%d)\n", GYRO_X_H, GYRO_X_L, (short int)((GYRO_X_H << 8) | GYRO_X_L));
     printf("GYRO_Y  = 0x%.2X%.2X (%d)\n", GYRO_Y_H, GYRO_Y_L, (short int)((GYRO_Y_H << 8) | GYRO_Y_L));
     printf("GYRO_Z  = 0x%.2X%.2X (%d)\n", GYRO_Z_H, GYRO_Z_L, (short int)((GYRO_Z_H << 8) | GYRO_Z_L));
+    
+   
+    printf("sin(0.5) == %f",ab);
   }
 
 
