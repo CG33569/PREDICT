@@ -111,7 +111,7 @@ cd ~/t-crest/patmos
 make BOOTAPP=bootable-bootloader APP=hello_MPU6050 tools comp
 
 # making an elf file for a complete folder with multiple c files and a MakeFile
-make app APP=de10-nano
+make app APP=de10-IMU
 
 # downloading an elf file
-make BOOTAPP=bootable-bootloader APP=de10-nano tools comp download
+make BOOTAPP=bootable-bootloader APP=de10-IMU tools comp download
