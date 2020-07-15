@@ -1,72 +1,62 @@
 #include <stdio.h>
 #include <machine/patmos.h>
-#include <machine/spm.h>
-#include <stdint.h>
-#include <inttypes.h>
 #include <machine/rtc.h>
-#include "tt_minimal_scheduler.h"
 #include "demo_tasks.h"
-#include "schedule.h"
 
-#define PORTD (*((volatile _IODEV unsigned *)PATMOS_IO_LED))
-//Actuators and Propulsion controller
-#define ACTUATORS (*(( volatile _IODEV unsigned * )	PATMOS_IO_ACT))
-//#define PROPULSION ( ( volatile _IODEV unsigned * )	PATMOS_IO_ACT+0x10 )
+#define LED (*((volatile _IODEV unsigned *)PATMOS_IO_LED))
+#define MOTOR ( ( volatile _IODEV unsigned * )	PATMOS_IO_ACT+0x10 )
+#define m1 0
+#define m2 1
+#define m3 2
+#define m4 3
+
+//Writes to actuator specified by actuator ID (0 to 4)
+// The data is the PWM signal width in us (from 1000 to 2000 = 1 to 2 ms)
+void actuator_write(unsigned int actuator_id, unsigned int data){
+  *(MOTOR + actuator_id) = data;
+}
+
 int main() {
 
   int i, j;
-  uint64_t timer_channel_1, timer_channel_2, timer_channel_3, timer_channel_4, esc_1, esc_2, esc_3, esc_4, led;
+  unsigned int esc_1, esc_2, esc_3, esc_4, led;
   uint64_t loop_timer, timer_ms, esc_loop_timer;
 
 // Start output values
- ACTUATORS = 0;
- PORTD = 0;
+ LED = 0;
+ actuator_write(m1, 1000);
+ actuator_write(m2, 1000);
+ actuator_write(m3, 1000);
+ actuator_write(m4, 1000);
+ // 2 Seconds wait for initialization
+ timer_ms = (get_cpu_usecs()/MS_TO_US);
+ loop_timer = timer_ms;
+ while(timer_ms - loop_timer < 2000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
+
  printf("--Started.\n");
   for (i=0; i<10; ++i) {
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Creating the pulses for the ESC's is explained in this video:
-    //https://youtu.be/fqEkVcqxtU8
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Example constant values
+    // Example constant values from the controller
     esc_1 = 1800;
     esc_2 = 1500;
     esc_3 = 1400;
     esc_4 = 1200;
 
-  // Calculating times
-  timer_ms = (get_cpu_usecs()/MS_TO_US);
-  loop_timer = timer_ms;
-  //printf("--Waiting...");
-  while(timer_ms - loop_timer < 4000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
+    actuator_write(m1, esc_1);
+    actuator_write(m2, esc_2);
+    actuator_write(m3, esc_3);
+    actuator_write(m4, esc_4);
+    // 2 Seconds just spinning stuff
+    timer_ms = (get_cpu_usecs()/MS_TO_US);
+    loop_timer = timer_ms;
+    while(timer_ms - loop_timer < 2000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
 
-  led = 15;                                                       //Set digital outputs 4,5,6 and 7 high.
-  timer_channel_1 = esc_1 + timer_ms;                                     //Calculate the time of the faling edge of the esc-1 pulse.
-  timer_channel_2 = esc_2 + timer_ms;                                     //Calculate the time of the faling edge of the esc-2 pulse.
-  timer_channel_3 = esc_3 + timer_ms;                                     //Calculate the time of the faling edge of the esc-3 pulse.
-  timer_channel_4 = esc_4 + timer_ms;                                     //Calculate the time of the faling edge of the esc-4 pulse.
-
-  //printf("Time = %llu ms, Goal = %llu\n", timer_ms, timer_channel_1);
-
-  led = 16; // Only a start value
-  while (led!=0) {
-    esc_loop_timer = (get_cpu_usecs()/MS_TO_US);
-    led = 0;
-    if(timer_channel_1 >= esc_loop_timer){led=1;}
-    if(timer_channel_2 >= esc_loop_timer){led=led+2;}
-    if(timer_channel_3 >= esc_loop_timer){led=led+4;}
-    if(timer_channel_4 >= esc_loop_timer){led=led+8;}
-
-    //printf("%d-",led);
-
-    PORTD = led;
-    ACTUATORS = PORTD;
-  }
-
-// Printing and testing stuff
-  //printf("\nEnd n.%d\n",i);
 }
+
+actuator_write(m1, 1000);
+actuator_write(m2, 1000);
+actuator_write(m3, 1000);
+actuator_write(m4, 1000);
 
 return 0;
 }
