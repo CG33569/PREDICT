@@ -1,13 +1,14 @@
 //Edit the low, center and end values of the receiver inputs
 //also edit the direction of the reciver channels
+//MAY BE ADD TWBR which is ic speed to 400kHz
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <machine/patmos.h>
+#include <machine/exceptions.h>
 #include <stdbool.h>
 #include <math.h>
 #include <machine/rtc.h>
-#include "demo_tasks.h"
 
 //motors
 #define MOTOR ( ( volatile _IODEV unsigned * )  PATMOS_IO_ACT+0x10 )
@@ -15,6 +16,13 @@
 #define m2 1
 #define m3 2
 #define m4 3
+
+//battery voltage read
+#define BATTERY ( ( volatile _IODEV unsigned * )  PATMOS_IO_AUDIO )
+
+//Receiver controller
+#define RECEIVER ( ( volatile _IODEV unsigned * ) PATMOS_IO_ACT )
+
 //LEDs
 #define LED ( *( ( volatile _IODEV unsigned * ) PATMOS_IO_LED ) )
 
@@ -44,10 +52,9 @@
 #define MPU6050_GYRO_ZOUT_L        0x48   // R
 #define MPU6050_PWR_MGMT_1         0x6B   // R/W
 #define MPU6050_WHO_AM_I           0x75   // R
-
-//Actuators and Receiver controller
-#define MOTOR ( ( volatile _IODEV unsigned * )  PATMOS_IO_ACT+0x10)
-#define RECEIVER ( ( volatile _IODEV unsigned * ) PATMOS_IO_ACT )
+#define MPU6050_GYRO_CONFIG        0x1B   // R
+#define MPU6050_ACCEL_CONFIG       0x1C   // R
+#define MPU6050_CONFIG_REG         0x1A   // R
 
 
 ///////////initialization
@@ -69,24 +76,24 @@ float pid_i_gain_roll = 0.04;              //Gain setting for the roll I-control
 float pid_d_gain_roll = 18.0;              //Gain setting for the roll D-controller
 int pid_max_roll = 400;                    //Maximum output of the PID-controller (+/-)
 
-float pid_p_gain_pitch = pid_p_gain_roll;  //Gain setting for the pitch P-controller.
-float pid_i_gain_pitch = pid_i_gain_roll;  //Gain setting for the pitch I-controller.
-float pid_d_gain_pitch = pid_d_gain_roll;  //Gain setting for the pitch D-controller.
-int pid_max_pitch = pid_max_roll;          //Maximum output of the PID-controller (+/-)
+float pid_p_gain_pitch = 1.3;               //Gain setting for the pitch P-controller.
+float pid_i_gain_pitch = 0.04;              //Gain setting for the pitch I-controller.
+float pid_d_gain_pitch = 18.0;              //Gain setting for the pitch D-controller.
+int pid_max_pitch = 400;                    //Maximum output of the PID-controller (+/-)
 
 float pid_p_gain_yaw = 4.0;                //Gain setting for the pitch P-controller. //4.0
 float pid_i_gain_yaw = 0.02;               //Gain setting for the pitch I-controller. //0.02
 float pid_d_gain_yaw = 0.0;                //Gain setting for the pitch D-controller.
 int pid_max_yaw = 400;                     //Maximum output of the PID-controller (+/-)
 
-boolean auto_level = true;                 //Auto level on (true) or off (false)
+bool auto_level = true;                 //Auto level on (true) or off (false)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Declaring global variables
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-byte last_channel_1, last_channel_2, last_channel_3, last_channel_4;
-byte eeprom_data[36];
-byte highByte, lowByte;
+unsigned int  last_channel_1, last_channel_2, last_channel_3, last_channel_4;
+unsigned int  eeprom_data[36];
+unsigned int  highByte, lowByte;
 volatile int receiver_input_channel_1, receiver_input_channel_2, receiver_input_channel_3, receiver_input_channel_4;
 int counter_channel_1, counter_channel_2, counter_channel_3, counter_channel_4;
 int esc_1, esc_2, esc_3, esc_4;
@@ -102,7 +109,8 @@ float pid_error_temp;
 float pid_i_mem_roll, pid_roll_setpoint, gyro_roll_input=0.0, pid_output_roll, pid_last_roll_d_error;
 float pid_i_mem_pitch, pid_pitch_setpoint, gyro_pitch_input=0.0, pid_output_pitch, pid_last_pitch_d_error;
 float pid_i_mem_yaw, pid_yaw_setpoint, gyro_yaw_input=0.0, pid_output_yaw, pid_last_yaw_d_error;
-boolean gyro_angles_set;
+float angle_roll_acc, angle_pitch_acc, angle_pitch, angle_roll;
+bool gyro_angles_set;
 
 unsigned int signature = 0;
 unsigned int ACCEL_X_H = 0;
@@ -120,6 +128,10 @@ unsigned int GYRO_Y_L = 0;
 unsigned int GYRO_Z_H = 0;
 unsigned int GYRO_Z_L = 0;
 
+float batteryRead()
+{
+  return *(BATTERY);
+}
 
 void actuator_write(unsigned int actuator_id, unsigned int data)
 {
@@ -131,17 +143,10 @@ int receiver_read(unsigned int receiver_id){
   return *(RECEIVER + receiver_id);
 }
 
-void millis(int milliseconds)
-{
-  uint64_t timer_ms = (get_cpu_usecs()/MS_TO_US);
-  uint64_t loop_timer = timer_ms;
-  while(timer_ms - loop_timer < milliseconds)timer_ms = (get_cpu_usecs()/MS_TO_US);
-}
-
 void micros(int microseconds)
 {
-  uint64_t timer_ms = (get_cpu_usecs());
-  uint64_t loop_timer = timer_ms;
+  unsigned int timer_ms = (get_cpu_usecs());
+  unsigned int loop_timer = timer_ms;
   while(timer_ms - loop_timer < microseconds)timer_ms = get_cpu_usecs();
 }
 
@@ -187,68 +192,6 @@ void LED_out(int i){
   if(i==1) LED = 0x0001;
   else LED = 0x0000;
   return;
-}
-void gyro_signalen()
-{
-
-  receiver_input_channel_1 = convert_receiver_channel(1);                 //Convert the actual receiver signals for pitch to the standard 1000 - 2000us.
-  receiver_input_channel_2 = convert_receiver_channel(2);                 //Convert the actual receiver signals for roll to the standard 1000 - 2000us.
-  receiver_input_channel_3 = convert_receiver_channel(3);                 //Convert the actual receiver signals for throttle to the standard 1000 - 2000us.
-  receiver_input_channel_4 = convert_receiver_channel(4);                 //Convert the actual receiver signals for yaw to the standard 1000 - 2000us.
-
-  //Read the MPU-6050
-  ACCEL_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_H);
-  ACCEL_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_H);
-  ACCEL_X_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_L);
-  ACCEL_Y_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_L);
-  ACCEL_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_ZOUT_H);
-  ACCEL_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_ZOUT_L);
-  TEMP_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_L);
-  TEMP_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_H);
-  GYRO_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_XOUT_H);
-  GYRO_X_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_XOUT_L);
-  GYRO_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_YOUT_H);
-  GYRO_Y_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_YOUT_L);
-  GYRO_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_H);
-  GYRO_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_L);
-
-  acc_axis[1] = (float)(ACCEL_X_H<<8|ACCEL_X_L);                    //Add the low and high byte to the acc_x variable.
-  acc_axis[2] = (float)(ACCEL_Y_H<<8|ACCEL_Y_L);                  //Add the low and high byte to the acc_y variable.
-  acc_axis[3] = (float)(ACCEL_Z_H<<8|ACCEL_Z_L);                    //Add the low and high byte to the acc_z variable.
-  temperature = (float)(TEMP_H<<8|TEMP_L);                    //Add the low and high byte to the temperature variable.
-  gyro_axis[1] = (float)(GYRO_X_H<<8|GYRO_X_L);                   //Read high and low part of the angular data.
-  gyro_axis[2] = (float)(GYRO_Y_H<<8|GYRO_Y_L);                   //Read high and low part of the angular data.
-  gyro_axis[3] = (float)(GYRO_Z_H<<8|GYRO_Z_L);                   //Read high and low part of the angular data.
-
-  if(cal_int == 2000)
-  {
-    gyro_axis[1] -= gyro_axis_cal[1];                            //Only compensate after the calibration.
-    gyro_axis[2] -= gyro_axis_cal[2];                            //Only compensate after the calibration.
-    gyro_axis[3] -= gyro_axis_cal[3];                            //Only compensate after the calibration.
-  }
-  gyro_roll = gyro_axis[1];           //Set gyro_roll to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[28] & 0b10000000)gyro_roll *= -1;               //Invert gyro_roll if the MSB of EEPROM bit 28 is set.
-  gyro_pitch = gyro_axis[2];          //Set gyro_pitch to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[29] & 0b10000000)gyro_pitch *= -1;              //Invert gyro_pitch if the MSB of EEPROM bit 29 is set.
-  gyro_yaw = gyro_axis[3];            //Set gyro_yaw to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[30] & 0b10000000)gyro_yaw *= -1;                //Invert gyro_yaw if the MSB of EEPROM bit 30 is set.
-
-  acc_x = acc_axis[1];                //Set acc_x to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[29] & 0b10000000)acc_x *= -1;                   //Invert acc_x if the MSB of EEPROM bit 29 is set.
-  acc_y = acc_axis[2];                //Set acc_y to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[28] & 0b10000000)acc_y *= -1;                   //Invert acc_y if the MSB of EEPROM bit 28 is set.
-  acc_z = acc_axis[3];                //Set acc_z to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[30] & 0b10000000)acc_z *= -1;                   //Invert acc_z if the MSB of EEPROM bit 30 is set.
-
-
-   //   printf("-----------------------\n");
-   // printf("ACCEL_X = 0x%.2X%.2X (%d)\n", ACCEL_X_H, ACCEL_X_L, (short int)((ACCEL_X_H << 8) | ACCEL_X_L));
-   // printf("ACCEL_Y = 0x%.2X%.2X (%d)\n", ACCEL_Y_H, ACCEL_Y_L, (short int)((ACCEL_Y_H << 8) | ACCEL_Y_L));
-   // printf("ACCEL_Z = 0x%.2X%.2X (%d)\n", ACCEL_Z_H, ACCEL_Z_L, (short int)((ACCEL_Z_H << 8) | ACCEL_Z_L));
-   // printf("TEMP    = 0x%.2X%.2X (%.1f C)\n", TEMP_H, TEMP_L, ((double)((short int)((TEMP_H << 8) | TEMP_L)) + 12412.0) / 340.0 ); //using datasheet formula for T in degrees Celsius
-   // printf("GYRO_X  = 0x%.2X%.2X (%d)\n", GYRO_X_H, GYRO_X_L, (short int)((GYRO_X_H << 8) | GYRO_X_L));
-   // printf("GYRO_Y  = 0x%.2X%.2X (%d)\n", GYRO_Y_H, GYRO_Y_L, (short int)((GYRO_Y_H << 8) | GYRO_Y_L));
-   // printf("GYRO_Z  = 0x%.2X%.2X (%d)\n", GYRO_Z_H, GYRO_Z_L, (short int)((GYRO_Z_H << 8) | GYRO_Z_L));
 }
 
 // interrupt handler
@@ -321,9 +264,9 @@ void calculate_pid()
 
 //This part converts the actual receiver signals to a standardized 1000 – 1500 – 2000 microsecond value.
 //The stored data in the EEPROM is used.
-int convert_receiver_channel(byte function)
+int convert_receiver_channel(unsigned int  function)
 {
-  byte channel, reverse;                                                       //First we declare some local variables
+  unsigned int  channel, reverse;                                                       //First we declare some local variables
   int low, center, high, actual;
   int difference;
 
@@ -352,6 +295,68 @@ int convert_receiver_channel(byte function)
   else return 1500;
 }
 
+void gyro_signalen()
+{
+
+  receiver_input_channel_1 = convert_receiver_channel(1);                 //Convert the actual receiver signals for pitch to the standard 1000 - 2000us.
+  receiver_input_channel_2 = convert_receiver_channel(2);                 //Convert the actual receiver signals for roll to the standard 1000 - 2000us.
+  receiver_input_channel_3 = convert_receiver_channel(3);                 //Convert the actual receiver signals for throttle to the standard 1000 - 2000us.
+  receiver_input_channel_4 = convert_receiver_channel(4);                 //Convert the actual receiver signals for yaw to the standard 1000 - 2000us.
+
+  //Read the MPU-6050
+  ACCEL_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_H);
+  ACCEL_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_H);
+  ACCEL_X_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_L);
+  ACCEL_Y_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_L);
+  ACCEL_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_ZOUT_H);
+  ACCEL_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_ZOUT_L);
+  TEMP_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_L);
+  TEMP_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_H);
+  GYRO_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_XOUT_H);
+  GYRO_X_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_XOUT_L);
+  GYRO_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_YOUT_H);
+  GYRO_Y_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_YOUT_L);
+  GYRO_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_H);
+  GYRO_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_L);
+
+  acc_axis[1] = (float)(ACCEL_X_H<<8|ACCEL_X_L);                    //Add the low and high byte to the acc_x variable.
+  acc_axis[2] = (float)(ACCEL_Y_H<<8|ACCEL_Y_L);                  //Add the low and high byte to the acc_y variable.
+  acc_axis[3] = (float)(ACCEL_Z_H<<8|ACCEL_Z_L);                    //Add the low and high byte to the acc_z variable.
+  temperature = (float)(TEMP_H<<8|TEMP_L);                    //Add the low and high byte to the temperature variable.
+  gyro_axis[1] = (float)(GYRO_X_H<<8|GYRO_X_L);                   //Read high and low part of the angular data.
+  gyro_axis[2] = (float)(GYRO_Y_H<<8|GYRO_Y_L);                   //Read high and low part of the angular data.
+  gyro_axis[3] = (float)(GYRO_Z_H<<8|GYRO_Z_L);                   //Read high and low part of the angular data.
+
+  if(cal_int == 2000)
+  {
+    gyro_axis[1] -= gyro_axis_cal[1];                            //Only compensate after the calibration.
+    gyro_axis[2] -= gyro_axis_cal[2];                            //Only compensate after the calibration.
+    gyro_axis[3] -= gyro_axis_cal[3];                            //Only compensate after the calibration.
+  }
+  gyro_roll = gyro_axis[1];           //Set gyro_roll to the correct axis that was stored in the EEPROM.
+  //  if(eeprom_data[28] & 0b10000000)gyro_roll *= -1;               //Invert gyro_roll if the MSB of EEPROM bit 28 is set.
+  gyro_pitch = gyro_axis[2];          //Set gyro_pitch to the correct axis that was stored in the EEPROM.
+  //  if(eeprom_data[29] & 0b10000000)gyro_pitch *= -1;              //Invert gyro_pitch if the MSB of EEPROM bit 29 is set.
+  gyro_yaw = gyro_axis[3];            //Set gyro_yaw to the correct axis that was stored in the EEPROM.
+  //  if(eeprom_data[30] & 0b10000000)gyro_yaw *= -1;                //Invert gyro_yaw if the MSB of EEPROM bit 30 is set.
+
+  acc_x = acc_axis[1];                //Set acc_x to the correct axis that was stored in the EEPROM.
+  //  if(eeprom_data[29] & 0b10000000)acc_x *= -1;                   //Invert acc_x if the MSB of EEPROM bit 29 is set.
+  acc_y = acc_axis[2];                //Set acc_y to the correct axis that was stored in the EEPROM.
+  //  if(eeprom_data[28] & 0b10000000)acc_y *= -1;                   //Invert acc_y if the MSB of EEPROM bit 28 is set.
+  acc_z = acc_axis[3];                //Set acc_z to the correct axis that was stored in the EEPROM.
+  //  if(eeprom_data[30] & 0b10000000)acc_z *= -1;                   //Invert acc_z if the MSB of EEPROM bit 30 is set.
+
+
+   //   printf("-----------------------\n");
+   // printf("ACCEL_X = 0x%.2X%.2X (%d)\n", ACCEL_X_H, ACCEL_X_L, (short int)((ACCEL_X_H << 8) | ACCEL_X_L));
+   // printf("ACCEL_Y = 0x%.2X%.2X (%d)\n", ACCEL_Y_H, ACCEL_Y_L, (short int)((ACCEL_Y_H << 8) | ACCEL_Y_L));
+   // printf("ACCEL_Z = 0x%.2X%.2X (%d)\n", ACCEL_Z_H, ACCEL_Z_L, (short int)((ACCEL_Z_H << 8) | ACCEL_Z_L));
+   // printf("TEMP    = 0x%.2X%.2X (%.1f C)\n", TEMP_H, TEMP_L, ((double)((short int)((TEMP_H << 8) | TEMP_L)) + 12412.0) / 340.0 ); //using datasheet formula for T in degrees Celsius
+   // printf("GYRO_X  = 0x%.2X%.2X (%d)\n", GYRO_X_H, GYRO_X_L, (short int)((GYRO_X_H << 8) | GYRO_X_L));
+   // printf("GYRO_Y  = 0x%.2X%.2X (%d)\n", GYRO_Y_H, GYRO_Y_L, (short int)((GYRO_Y_H << 8) | GYRO_Y_L));
+   // printf("GYRO_Z  = 0x%.2X%.2X (%d)\n", GYRO_Z_H, GYRO_Z_L, (short int)((GYRO_Z_H << 8) | GYRO_Z_L));
+}
 
 int main(int argc, char **argv)
 {
@@ -370,12 +375,12 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    millis(3);  
+    micros(3000);  
   }
 
   //Let's take multiple gyro data samples so we can determine the average gyro offset (calibration).
   for (cal_int = 0; cal_int < 2000 ; cal_int ++){                           //Take 2000 readings for calibration.
-    if(cal_int % 15 == 0)digitalWrite(12, !digitalRead(12));                //Change the led status to indicate calibration.
+    if(cal_int % 15 == 0)LED_out(1);                //Change the led status to indicate calibration.
     gyro_signalen();                                                        //Read the gyro output.
     gyro_axis_cal[1] += gyro_axis[1];                                       //Ad roll value to gyro_roll_cal.
     gyro_axis_cal[2] += gyro_axis[2];                                       //Ad pitch value to gyro_pitch_cal.
@@ -385,7 +390,7 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    millis(3);                                                                 //Wait 3 milliseconds before the next loop.
+    micros(3000);                                                                 //Wait 3 milliseconds before the next loop.
   }
   //Now that we have 2000 measures, we need to devide by 2000 to get the average gyro offset.
   gyro_axis_cal[1] /= 2000;                                                 //Divide the roll total by 2000.
@@ -419,7 +424,7 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    millis(3);                                                               //Wait 3 milliseconds before the next loop.
+    micros(3000);                                                               //Wait 3 milliseconds before the next loop.
     if(start == 125){                                                       //Every 125 loops (500ms).
       LED_out(1);                                   //Change the led status.
       start = 0;                                                            //Start again at 0.
@@ -433,9 +438,9 @@ int main(int argc, char **argv)
   //12.6V equals 1023 analogRead(0).
   //1260 / 1023 = 1.2317.
   //The variable battery_voltage holds 1050 if the battery voltage is 10.5V.
-  battery_voltage = (analogRead(0) + 65) * 1.2317;
+  battery_voltage = (batteryRead() + 65) * 1.2317;
 
-  loop_timer = micros();                                                    //Set the timer for the next loop.
+  loop_timer = get_cpu_usecs();                                                    //Set the timer for the next loop.
 
   //When everything is done, turn off the led.
   LED_out(0);                                                     //Turn off the warning led.
@@ -549,10 +554,10 @@ int main(int argc, char **argv)
     //The battery voltage is needed for compensation.
     //A complementary filter is used to reduce noise.
     //0.09853 = 0.08 * 1.2317.
-    battery_voltage = battery_voltage * 0.92 + (analogRead(0) + 65) * 0.09853;
+    battery_voltage = battery_voltage * 0.92 + (batteryRead() + 65) * 0.09853;
 
     //Turn on the led if battery voltage is to low.
-    if(battery_voltage < 1000 && battery_voltage > 600)digitalWrite(12, HIGH);
+    if(battery_voltage < 1000 && battery_voltage > 600)LED_out(1);
 
 
     throttle = receiver_input_channel_3;                                      //We need the throttle signal as a base signal.
@@ -601,12 +606,12 @@ int main(int argc, char **argv)
     //the Q&A page: 
     //! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
       
-    if(micros() - loop_timer > 4050)LED_out(1);                   //Turn on the LED if the loop time exceeds 4050us.
+    if(get_cpu_usecs() - loop_timer > 4050)LED_out(1);                   //Turn on the LED if the loop time exceeds 4050us.
     
     //All the information for controlling the motor's is available.
     //The refresh rate is 250Hz. That means the esc's need there pulse every 4ms.
-    while(micros() - loop_timer < 4000);                                      //We wait until 4000us are passed.
-    loop_timer = micros();                                                    //Set the timer for the next loop.
+    while(get_cpu_usecs() - loop_timer < 4000);                                      //We wait until 4000us are passed.
+    loop_timer = get_cpu_usecs();                                                    //Set the timer for the next loop.
 
     //esc pwm write
     actuator_write(m1, esc_1);
