@@ -9,8 +9,8 @@
 #define LED ( *( ( volatile _IODEV unsigned * )	PATMOS_IO_LED ) )
 
 //Actuators and Propulsion controller
-#define ACTUATORS ( ( volatile _IODEV unsigned * )	PATMOS_IO_ACT)
-#define PROPULSION ( ( volatile _IODEV unsigned * )	PATMOS_IO_ACT+0x10 )
+#define ACTUATORS ( ( volatile _IODEV unsigned * )  PATMOS_IO_ACT )
+#define PROPULSION ( ( volatile _IODEV unsigned * ) PATMOS_IO_ACT+0x10 )
 
 //UART2
 #define UART2 ( ( volatile _IODEV unsigned * )	PATMOS_IO_UART2 )
@@ -21,9 +21,10 @@ void actuator_write(unsigned int actuator_id, unsigned int data){
 }
 
 //Writes to propulsion specified by propulsion ID (0 to 4)
-void propulsion_write(unsigned int propulsion_id, unsigned int data){
-  *(PROPULSION + propulsion_id) = data;
+void propulsion_write(unsigned int actuator_id, unsigned int data){
+  *(PROPULSION + actuator_id) = data;
 }
+
 
 //Reads from propulsion specified by propulsion ID (0 to 4)
 int propulsion_read(unsigned int propulsion_id){
@@ -37,7 +38,7 @@ int uart2_write(unsigned char data){
     *UART2 = (unsigned int) data;
     return 0;
   } else {
-    *data = 0;
+    data = 0;
     return -1;
   }
 }
@@ -47,10 +48,10 @@ int uart2_write(unsigned char data){
 //Returns 0 is a character was read, -1 otherwise.
 int uart2_read(unsigned char * data){
   if ((*UART2 & 0x00000002) != 0) {
-    *data = (unsigned char)(*(UART2+1) & 0x000000FF);
+    data = (unsigned char)(*(UART2+1) & 0x000000FF);
     return 0;
   } else {
-    *data = 0;
+    data = 0;
     return -1;
   }
 }

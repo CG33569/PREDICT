@@ -1,4 +1,4 @@
-MAIN?=hello_MPU6050
+MAIN?=acts_props_uart2
 #MAIN?=blinking
 
 # This is the trivial Hello World example, distributed over two .c files

@@ -1,5 +1,5 @@
 # Edit next two values:
-export APP=drone-motor
+export APP=de10-nano
 export ADDRESS=~/t-crest/patmos
 
 # Let everything else run:
