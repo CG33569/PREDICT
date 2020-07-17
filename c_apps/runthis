@@ -1,0 +1,20 @@
+# Edit next two values:
+export APP=drone-motor
+export ADDRESS=~/t-crest/patmos
+
+# Let everything else run:
+white=`tput setab 7`
+green=`tput setaf 2`
+reset=`tput sgr0`
+echo "${green}======== Generating C app in Patmos directory... ========${reset}"
+echo "APP = "$APP
+rm -rf $ADDRESS/c/apps/$APP
+mkdir $ADDRESS/c/apps/$APP
+cp $APP/* $ADDRESS/c/apps/$APP
+echo "Copy process done."
+echo "${green}======== Compiling C app in Patmos ========${reset}"
+cd $ADDRESS
+export BOARD=de10-nano
+make app APP=$APP comp
+echo "${green}======== Download code on board ========${reset}"
+make app APP=$APP download

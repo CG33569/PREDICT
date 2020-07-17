@@ -1,8 +1,0 @@
-cd ~/t-crest/patmos
-# build board and patmos architechture
-export BOARD=altde2-115
-make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=altde2-115
-make synth
-make config
-# build c app
-make BOOTAPP=bootable-bootloader APP=hello_puts tools comp download

@@ -1,4 +1,4 @@
-MAIN?=IMU-rpy
+MAIN?=Flight_controller
 #MAIN?=blinking
 
 # This is the trivial Hello World example, distributed over two .c files

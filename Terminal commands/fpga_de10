@@ -1,7 +1,0 @@
-cd ~/t-crest/patmos
-export BOARD=de10-nano
-make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=de10-nano
-make synth
-make config
-# build c app
-make app APP=de10-nano MAIN=blinking download

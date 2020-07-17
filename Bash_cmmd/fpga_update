@@ -1,0 +1,19 @@
+# Edit the repository address:
+export REPOS=~/t-crest
+
+# Let everything else run:
+white=`tput setab 7`
+green=`tput setaf 2`
+reset=`tput sgr0`
+echo "${green}${white}======== Updating repositories ========${reset}"
+cd $REPOS
+./misc/gitall pull
+echo "${green}${white}======== Building repositories ========${reset}"
+cd misc
+cp build.cfg.dist build.cfg
+./build.sh
+cd ..
+./misc/build.sh newlib
+cd patmos/doc
+make
+cd

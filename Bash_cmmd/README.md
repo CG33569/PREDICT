@@ -12,6 +12,16 @@ These scripts and files are to meant to help to build patmos and download c code
 ./fpga_de10
 ```
 
+* After downloading the Patmos architechture on a board, there is a script for apps. To make things easier, the script is on the c_apps folder in this repository, which directly copies a c app developed on this repository to the Patmos directly and compiles+downloads it on the board:
+```
+cd .. && cd c_apps
+./runthis
+```
+
+![](info/runthis.png)
+
+The next sections of this README file explains step by step how to update, build and download Patmos and c apps on the boards.
+
 The file patmos_help.txt contains just a set of used instructions to go through. Some of them are listed here, and some of them are just information or ideas that could be used later.
 
 ### Building PATMOS ###
@@ -132,11 +142,19 @@ Now the name of the app should be the same as the .elf file and it's the one tha
 2. Place in the folder the .c files, .sh libraries and a Makefile.
 
 
-3. Build the complete folder. Take the other apps as examples. The Makefile specifies a concrete set of variables and has different options (e.g. compile, sim, clean,...). In case of using an example app, check which command is the one that converts to .elf file after compiling. 
+3. Build the complete folder. Take the other apps as examples. This is possible through two ways:
+
+* The Makefile specifies a concrete set of variables and has different options (e.g. compile, sim, clean,...). Usually is enough as long as it includes the conversion to an .elf file with the name of the app. In case of using an example app, check which command is the one that converts to .elf file after compiling.
 ```
 cd ~/Your patmos location here/patmos/c/apps/your folder here
 make
 ```
+* Compile it through Patmos directly:
+```
+cd ~/Your patmos location here/patmos
+make app APP=your app comp
+```
+
 The next screenshot shows the content and commands to build the example app tte-flight:
 * Top-left: application files.
 * Bottom-left: command terminal.
@@ -148,14 +166,15 @@ The next screenshot shows the content and commands to build the example app tte-
 4. Further development:
 * In this repository there are two c apps included: de10-nano and de10-IMU.
 * de10-nano is an example app from the original patmos repository to test the communication with an IMU. To use it on the board (after downloading patmos on it):
+
 ![](info/de10_IMU.jpg)
+
 ```
 cd ~/t-crest/patmos
 make app APP=de10-nano download
 ```
-![](info/de10-nano_app.png)
 
-* de10-IMU is our own first c app, to start programming the flight controller and is based on the previous one.
+![](info/de10-nano_app.png)
 
 
 ### Downloading c code ###
