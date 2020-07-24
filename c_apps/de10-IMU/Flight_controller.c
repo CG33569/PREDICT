@@ -141,6 +141,10 @@ void actuator_write(unsigned int actuator_id, unsigned int data)
 //Reads from propulsion specified by propulsion ID (0 to 4)
 int receiver_read(unsigned int receiver_id){
   return *(RECEIVER + receiver_id);
+  unsigned int clock_cycles_counted = *(RECEIVER + receiver_id);
+  unsigned int pulse_high_time = (clock_cycles_counted * CPU_PERIOD) / 1000;
+
+  return pulse_high_time;
 }
 
 void micros(int microseconds)
