@@ -10,6 +10,11 @@
 #include <math.h>
 #include <machine/rtc.h>
 
+
+//channel 1- roll
+// channel 2 - pitch
+// channel 3- throttle
+// channel 4- yaw
 //motors
 #define MOTOR ( ( volatile _IODEV unsigned * )  PATMOS_IO_ACT+0x10 )
 #define m1 0
@@ -60,8 +65,8 @@
 ///////////initialization
 
 int temperature=0;
-float acc_x=0.0, acc_y=0.0, acc_z=0.0, acc_total_vector=0.0;
-int acc_axis[4]={0,0,0,0}, gyro_axis[4]={0,0,0,0};
+double acc_x=0.0, acc_y=0.0, acc_z=0.0, acc_total_vector=0.0;
+short int acc_axis[4]={0,0,0,0}, gyro_axis[4]={0,0,0,0};
 double gyro_pitch=0.0, gyro_roll=0.0, gyro_yaw=0.0;
 int cal_int=0, loop_counter=0;
 double gyro_axis_cal[4]={0.0,0.0,0.0,0.0};
@@ -214,10 +219,11 @@ void intr_handler(void) {
 void set_gyro_registers()
 {
   //Setup the MPU-6050
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_PWR_MGMT_1, 0x00);                    //Set the register bits as 00000000 to activate the gyro
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_GYRO_CONFIG, 0x08);                   //Set the register bits as 00001000 (500dps full scale)
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_CONFIG, 0x10);                  //Set the register bits as 00010000 (+/- 8g full scale range)
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_CONFIG_REG, 0x03);                    //Set the register bits as 00000011 (Set Digital Low Pass Filter to ~43Hz)
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_PWR_MGMT_1, 0x00));                    //Set the register bits as 00000000 to activate the gyro
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_GYRO_CONFIG, 0x08));                   //Set the register bits as 00001000 (500dps full scale)
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_CONFIG, 0x10));                  //Set the register bits as 00010000 (+/- 8g full scale range)
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_CONFIG_REG, 0x03));                    //Set the register bits as 00000011 (Set Digital Low Pass Filter to ~43Hz)
+
 }
 
 
@@ -268,31 +274,47 @@ void calculate_pid()
 
 //This part converts the actual receiver signals to a standardized 1000 – 1500 – 2000 microsecond value.
 //The stored data in the EEPROM is used.
-int convert_receiver_channel(unsigned int  function)
+int convert_receiver_channel(unsigned int function)
 {
   unsigned int  channel, reverse;                                                       //First we declare some local variables
-  int low, center, high, actual;
+  int low[5]={0,1068,1100,1108,1068}, center[5]={0,1488,1504,1504,1468}, high[5]={0,1892,1908,1904,1864}, actual; ///(0,th,roll,pitch,yaw)
   int difference;
 
-  if(function==1)reverse = 1;                      //Reverse channel when most significant bit is set
-  else if(function==2)reverse = 0;
-  else if(function==3)reverse = 0;
-  else reverse = 0;                                                            //If the most significant is not set there is no reverse
+  if(function==1)
+  {
+    reverse = 1;                      //Reverse channel when most significant bit is set
+    channel =2;
+  }
+  else if(function==2)
+  {
+    reverse = 0;
+    channel=3;
+  }
+  else if(function==3)
+  {
+    reverse = 1;
+    channel=1;
+  }
+  else
+  {
+    reverse = 0;                                                            //If the most significant is not set there is no reverse
+    channel =4;
+  }
 
   actual = receiver_input[channel];                                            //Read the actual receiver value for the corresponding function
-  low = 1000;  //Store the low value for the specific receiver input channel
-  center = 1500; //Store the center value for the specific receiver input channel
-  high = 2000;   //Store the high value for the specific receiver input channel
+  // low = 1000;  //Store the low value for the specific receiver input channel
+  // center = 1500; //Store the center value for the specific receiver input channel
+  // high = 2000;   //Store the high value for the specific receiver input channel
 
-  if(actual < center){                                                         //The actual receiver value is lower than the center value
-    if(actual < low)actual = low;                                              //Limit the lowest value to the value that was detected during setup
-    difference = ((long)(center - actual) * (long)500) / (center - low);       //Calculate and scale the actual value to a 1000 - 2000us value
+  if(actual < center[channel]){                                                         //The actual receiver value is lower than the center value
+    if(actual < low[channel])actual = low[channel];                                              //Limit the lowest value to the value that was detected during setup
+    difference = ((long)(center[channel] - actual) * (long)500) / (center[channel] - low[channel]);       //Calculate and scale the actual value to a 1000 - 2000us value
     if(reverse == 1)return 1500 + difference;                                  //If the channel is reversed
     else return 1500 - difference;                                             //If the channel is not reversed
   }
-  else if(actual > center){                                                                        //The actual receiver value is higher than the center value
-    if(actual > high)actual = high;                                            //Limit the lowest value to the value that was detected during setup
-    difference = ((long)(actual - center) * (long)500) / (high - center);      //Calculate and scale the actual value to a 1000 - 2000us value
+  else if(actual > center[channel]){                                                                        //The actual receiver value is higher than the center value
+    if(actual > high[channel])actual = high[channel];                                            //Limit the lowest value to the value that was detected during setup
+    difference = ((long)(actual - center[channel]) * (long)500) / (high[channel] - center[channel]);      //Calculate and scale the actual value to a 1000 - 2000us value
     if(reverse == 1)return 1500 - difference;                                  //If the channel is reversed
     else return 1500 + difference;                                             //If the channel is not reversed
   }
@@ -302,20 +324,20 @@ int convert_receiver_channel(unsigned int  function)
 void gyro_signalen()
 {
 
-  receiver_input_channel_1 = convert_receiver_channel(1);                 //Convert the actual receiver signals for pitch to the standard 1000 - 2000us.
-  receiver_input_channel_2 = convert_receiver_channel(2);                 //Convert the actual receiver signals for roll to the standard 1000 - 2000us.
+  receiver_input_channel_1 = convert_receiver_channel(1);                 //Convert the actual receiver signals for roll to the standard 1000 - 2000us.
+  receiver_input_channel_2 = convert_receiver_channel(2);                 //Convert the actual receiver signals for pitch to the standard 1000 - 2000us.
   receiver_input_channel_3 = convert_receiver_channel(3);                 //Convert the actual receiver signals for throttle to the standard 1000 - 2000us.
   receiver_input_channel_4 = convert_receiver_channel(4);                 //Convert the actual receiver signals for yaw to the standard 1000 - 2000us.
 
   //Read the MPU-6050
   ACCEL_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_H);
-  ACCEL_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_H);
   ACCEL_X_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_XOUT_L);
+  ACCEL_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_H);
   ACCEL_Y_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_YOUT_L);
   ACCEL_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_ZOUT_H);
   ACCEL_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_ZOUT_L);
-  TEMP_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_L);
   TEMP_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_H);
+  TEMP_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_TEMP_OUT_L);
   GYRO_X_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_XOUT_H);
   GYRO_X_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_XOUT_L);
   GYRO_Y_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_YOUT_H);
@@ -338,19 +360,17 @@ void gyro_signalen()
     gyro_axis[3] -= gyro_axis_cal[3];                            //Only compensate after the calibration.
   }
   gyro_roll = gyro_axis[1];           //Set gyro_roll to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[28] & 0b10000000)gyro_roll *= -1;               //Invert gyro_roll if the MSB of EEPROM bit 28 is set.
   gyro_pitch = gyro_axis[2];          //Set gyro_pitch to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[29] & 0b10000000)gyro_pitch *= -1;              //Invert gyro_pitch if the MSB of EEPROM bit 29 is set.
+  gyro_pitch *= -1;              //Invert gyro_pitch if the MSB of EEPROM bit 29 is set.
   gyro_yaw = gyro_axis[3];            //Set gyro_yaw to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[30] & 0b10000000)gyro_yaw *= -1;                //Invert gyro_yaw if the MSB of EEPROM bit 30 is set.
+  gyro_yaw *= -1;                //Invert gyro_yaw if the MSB of EEPROM bit 30 is set.
 
-  acc_x = acc_axis[1];                //Set acc_x to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[29] & 0b10000000)acc_x *= -1;                   //Invert acc_x if the MSB of EEPROM bit 29 is set.
-  acc_y = acc_axis[2];                //Set acc_y to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[28] & 0b10000000)acc_y *= -1;                   //Invert acc_y if the MSB of EEPROM bit 28 is set.
+
+  acc_x = acc_axis[2];                //Set acc_x to the correct axis that was stored in the EEPROM.
+  acc_x *= -1;                   //Invert acc_x if the MSB of EEPROM bit 29 is set.
+  acc_y = acc_axis[1];                //Set acc_y to the correct axis that was stored in the EEPROM.
   acc_z = acc_axis[3];                //Set acc_z to the correct axis that was stored in the EEPROM.
-  //  if(eeprom_data[30] & 0b10000000)acc_z *= -1;                   //Invert acc_z if the MSB of EEPROM bit 30 is set.
-
+  acc_z *= -1;                   //Invert acc_z if the MSB of EEPROM bit 30 is set.
 
    //   printf("-----------------------\n");
    // printf("ACCEL_X = 0x%.2X%.2X (%d)\n", ACCEL_X_H, ACCEL_X_L, (short int)((ACCEL_X_H << 8) | ACCEL_X_L));
@@ -379,7 +399,7 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    micros(3000);  
+    // micros(3000);  
   }
 
   //Let's take multiple gyro data samples so we can determine the average gyro offset (calibration).
@@ -394,7 +414,7 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    micros(3000);                                                                 //Wait 3 milliseconds before the next loop.
+    // micros(3000);                                                                 //Wait 3 milliseconds before the next loop.
   }
   //Now that we have 2000 measures, we need to devide by 2000 to get the average gyro offset.
   gyro_axis_cal[1] /= 2000;                                                 //Divide the roll total by 2000.
@@ -428,7 +448,7 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    micros(3000);                                                               //Wait 3 milliseconds before the next loop.
+    // micros(3000);                                                               //Wait 3 milliseconds before the next loop.
     if(start == 125){                                                       //Every 125 loops (500ms).
       LED_out(1);                                   //Change the led status.
       start = 0;                                                            //Start again at 0.
@@ -452,7 +472,7 @@ int main(int argc, char **argv)
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Main program loop
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for (int j=0;j<10;j++)
+  for (int j=0;j<10000;j++)
   {
 
     //65.5 = 1 deg/sec (check the datasheet of the MPU-6050 for more information).
@@ -473,8 +493,8 @@ int main(int argc, char **argv)
     angle_roll += gyro_roll * 0.0000611;                                      //Calculate the traveled roll angle and add this to the angle_roll variable.
 
     //0.000001066 = 0.0000611 * (3.142(PI) / 180degr) The Arduino sin function is in radians
-    angle_pitch -= angle_roll * (float)sin(gyro_yaw * 0.000001066);                  //If the IMU has yawed transfer the roll angle to the pitch angel.
-    angle_roll += angle_pitch * (float)sin(gyro_yaw * 0.000001066);                  //If the IMU has yawed transfer the pitch angle to the roll angel.
+    angle_pitch -= angle_roll * sin(gyro_yaw * 0.000001066);                  //If the IMU has yawed transfer the roll angle to the pitch angel.
+    angle_roll += angle_pitch * sin(gyro_yaw * 0.000001066);                  //If the IMU has yawed transfer the pitch angle to the roll angel.
 
     //Accelerometer angle calculations
     acc_total_vector = sqrt((acc_x*acc_x)+(acc_y*acc_y)+(acc_z*acc_z));       //Calculate the total accelerometer vector.
@@ -487,8 +507,8 @@ int main(int argc, char **argv)
     }
     
     //Place the MPU-6050 spirit level and note the values in the following two lines for calibration.
-    angle_pitch_acc -= 0.0;                                                   //Accelerometer calibration value for pitch.
-    angle_roll_acc -= 0.0;                                                    //Accelerometer calibration value for roll.
+    angle_pitch_acc += 5.3;                                                   //Accelerometer calibration value for pitch.
+    angle_roll_acc += 0.11;                                                    //Accelerometer calibration value for roll.
     
     angle_pitch = angle_pitch * 0.9996 + angle_pitch_acc * 0.0004;            //Correct the drift of the gyro pitch angle with the accelerometer pitch angle.
     angle_roll = angle_roll * 0.9996 + angle_roll_acc * 0.0004;               //Correct the drift of the gyro roll angle with the accelerometer roll angle.
