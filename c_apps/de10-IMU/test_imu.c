@@ -1,8 +1,11 @@
 #include <stdio.h>
+//#include <string.h>
 #include <stdlib.h>
 #include <machine/rtc.h>
 #include <machine/patmos.h>
 #include <stdbool.h>
+//#include "libcorethread/corethread.h"
+//#include "libmp/mp.h"
 #include <math.h>
 #include <time.h>
 
@@ -204,7 +207,7 @@ int main(int argc, char **argv)
 
   loop_timer = get_cpu_usecs();
   //for (int i = 0; i < 5; i++) {
-  for (int j=0;j<3000;j++)
+  for (int j=0;j<10000;j++)
   // while(1)
   {
     while(loop_timer + 4000 > get_cpu_usecs());                                                  //Start the pulse after 4000 micro seconds.
