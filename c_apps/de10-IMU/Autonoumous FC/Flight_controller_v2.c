@@ -58,6 +58,9 @@
 
 #define BARO_REG                   0xA0   // R
 
+const unsigned int CPU_PERIOD = 20; //CPU period in ns.
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PID gain and limit settings
@@ -212,6 +215,9 @@ float return_to_home_lat_factor, return_to_home_lon_factor, return_to_home_move_
 uint8_t home_point_recorded;
 int32_t lat_gps_home, lon_gps_home;
 
+short int acc_axis[4], gyro_axis[4];
+int temperature;
+int gyro_axis_cal[4], acc_axis_cal[4];
 
 //Adjust settings online
 uint32_t setting_adjust_timer;
@@ -235,6 +241,10 @@ void actuator_write(unsigned int actuator_id, unsigned int data)
 //Reads from propulsion specified by propulsion ID (0 to 4)
 int receiver_read(unsigned int receiver_id){
   return *(RECEIVER + receiver_id);
+  unsigned int clock_cycles_counted = *(RECEIVER + receiver_id);
+  unsigned int pulse_high_time = (clock_cycles_counted * CPU_PERIOD) / 1000;
+
+  return pulse_high_time;
 }
 
 void micros(int microseconds)
@@ -310,10 +320,10 @@ void timer_setup(void) {
 void set_gyro_registers()
 {
   //Setup the MPU-6050
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_PWR_MGMT_1, 0x00);                    //Set the register bits as 00000000 to activate the gyro
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_GYRO_CONFIG, 0x08);                   //Set the register bits as 00001000 (500dps full scale)
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_CONFIG, 0x10);                  //Set the register bits as 00010000 (+/- 8g full scale range)
-  i2c_write(MPU6050_I2C_ADDRESS, MPU6050_CONFIG_REG, 0x03);                    //Set the register bits as 00000011 (Set Digital Low Pass Filter to ~43Hz)
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_PWR_MGMT_1, 0x00));                    //Set the register bits as 00000000 to activate the gyro
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_GYRO_CONFIG, 0x08));                   //Set the register bits as 00001000 (500dps full scale)
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_ACCEL_CONFIG, 0x10));                  //Set the register bits as 00010000 (+/- 8g full scale range)
+  while(i2c_write(MPU6050_I2C_ADDRESS, MPU6050_CONFIG_REG, 0x03));                    //Set the register bits as 00000011 (Set Digital Low Pass Filter to ~43Hz)
 }
 
 void gyro_signalen()
@@ -334,13 +344,13 @@ void gyro_signalen()
   GYRO_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_H);
   GYRO_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_L);
 
-  acc_axis[1] = (float)(ACCEL_X_H<<8|ACCEL_X_L);                    //Add the low and high byte to the acc_x variable.
-  acc_axis[2] = (float)(ACCEL_Y_H<<8|ACCEL_Y_L);                  //Add the low and high byte to the acc_y variable.
-  acc_axis[3] = (float)(ACCEL_Z_H<<8|ACCEL_Z_L);                    //Add the low and high byte to the acc_z variable.
-  temperature = (float)(TEMP_H<<8|TEMP_L);                    //Add the low and high byte to the temperature variable.
-  gyro_axis[1] = (float)(GYRO_X_H<<8|GYRO_X_L);                   //Read high and low part of the angular data.
-  gyro_axis[2] = (float)(GYRO_Y_H<<8|GYRO_Y_L);                   //Read high and low part of the angular data.
-  gyro_axis[3] = (float)(GYRO_Z_H<<8|GYRO_Z_L);                   //Read high and low part of the angular data.
+  acc_axis[1] = (ACCEL_X_H<<8|ACCEL_X_L);                    //Add the low and high byte to the acc_x variable.
+  acc_axis[2] = (ACCEL_Y_H<<8|ACCEL_Y_L);                  //Add the low and high byte to the acc_y variable.
+  acc_axis[3] = (ACCEL_Z_H<<8|ACCEL_Z_L);                    //Add the low and high byte to the acc_z variable.
+  temperature = (TEMP_H<<8|TEMP_L);                    //Add the low and high byte to the temperature variable.
+  gyro_axis[1] = (GYRO_X_H<<8|GYRO_X_L);                   //Read high and low part of the angular data.
+  gyro_axis[2] = (GYRO_Y_H<<8|GYRO_Y_L);                   //Read high and low part of the angular data.
+  gyro_axis[3] = (GYRO_Z_H<<8|GYRO_Z_L);                   //Read high and low part of the angular data.
 
   if(cal_int == 2000)
   {

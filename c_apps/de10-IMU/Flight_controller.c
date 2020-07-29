@@ -61,6 +61,8 @@
 #define MPU6050_ACCEL_CONFIG       0x1C   // R
 #define MPU6050_CONFIG_REG         0x1A   // R
 
+const unsigned int CPU_PERIOD = 20; //CPU period in ns.
+
 
 ///////////initialization
 
@@ -96,6 +98,7 @@ bool auto_level = true;                 //Auto level on (true) or off (false)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Declaring global variables
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int low[5]={0,1068,1100,1108,1068}, center[5]={0,1488,1504,1504,1468}, high[5]={0,1892,1908,1904,1864};
 unsigned int  last_channel_1, last_channel_2, last_channel_3, last_channel_4;
 unsigned int  eeprom_data[36];
 unsigned int  highByte, lowByte;
@@ -277,7 +280,7 @@ void calculate_pid()
 int convert_receiver_channel(unsigned int function)
 {
   unsigned int  channel, reverse;                                                       //First we declare some local variables
-  int low[5]={0,1068,1100,1108,1068}, center[5]={0,1488,1504,1504,1468}, high[5]={0,1892,1908,1904,1864}, actual; ///(0,th,roll,pitch,yaw)
+  int actual; ///(0,th,roll,pitch,yaw)
   int difference;
 
   if(function==1)
@@ -345,13 +348,13 @@ void gyro_signalen()
   GYRO_Z_H = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_H);
   GYRO_Z_L = i2c_read(MPU6050_I2C_ADDRESS, MPU6050_GYRO_ZOUT_L);
 
-  acc_axis[1] = (float)(ACCEL_X_H<<8|ACCEL_X_L);                    //Add the low and high byte to the acc_x variable.
-  acc_axis[2] = (float)(ACCEL_Y_H<<8|ACCEL_Y_L);                  //Add the low and high byte to the acc_y variable.
-  acc_axis[3] = (float)(ACCEL_Z_H<<8|ACCEL_Z_L);                    //Add the low and high byte to the acc_z variable.
-  temperature = (float)(TEMP_H<<8|TEMP_L);                    //Add the low and high byte to the temperature variable.
-  gyro_axis[1] = (float)(GYRO_X_H<<8|GYRO_X_L);                   //Read high and low part of the angular data.
-  gyro_axis[2] = (float)(GYRO_Y_H<<8|GYRO_Y_L);                   //Read high and low part of the angular data.
-  gyro_axis[3] = (float)(GYRO_Z_H<<8|GYRO_Z_L);                   //Read high and low part of the angular data.
+  acc_axis[1] = (ACCEL_X_H<<8|ACCEL_X_L);                    //Add the low and high byte to the acc_x variable.
+  acc_axis[2] = (ACCEL_Y_H<<8|ACCEL_Y_L);                  //Add the low and high byte to the acc_y variable.
+  acc_axis[3] = (ACCEL_Z_H<<8|ACCEL_Z_L);                    //Add the low and high byte to the acc_z variable.
+  temperature = (TEMP_H<<8|TEMP_L);                    //Add the low and high byte to the temperature variable.
+  gyro_axis[1] = (GYRO_X_H<<8|GYRO_X_L);                   //Read high and low part of the angular data.
+  gyro_axis[2] = (GYRO_Y_H<<8|GYRO_Y_L);                   //Read high and low part of the angular data.
+  gyro_axis[3] = (GYRO_Z_H<<8|GYRO_Z_L);                   //Read high and low part of the angular data.
 
   if(cal_int == 2000)
   {
