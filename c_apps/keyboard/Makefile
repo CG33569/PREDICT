@@ -1,4 +1,7 @@
-MAIN?=motor_test
+APP? = keyboard
+MAIN? = mouse2
+
+# This is the trivial Hello World example, distributed over two .c files
 
 LDFLAGS?= \
         -mpatmos-method-cache-size=0x1000 \
@@ -6,6 +9,4 @@ LDFLAGS?= \
         -Xgold --defsym -Xgold __heap_end=0x070000
 
 all:
-	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o drone-motor.elf -lm
-	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o ~/t-crest/patmos/tmp/drone-motor.elf
-
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o $(APP).elf

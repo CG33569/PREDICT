@@ -1,5 +1,7 @@
 # Edit next two values:
-export APP=de10-nano
+export APP=drone-motor
+export MAIN=motor_test
+
 export ADDRESS=~/t-crest/patmos
 
 # Let everything else run:
@@ -13,6 +15,9 @@ mkdir $ADDRESS/c/apps/$APP
 cp $APP/* $ADDRESS/c/apps/$APP
 echo "Copy process done."
 echo "${green}======== Compiling C app in Patmos ========${reset}"
+cd $ADDRESS/c/apps/$APP
+#make all
+patmos-clang -o $ADDRESS/tmp/$APP.elf $MAIN.c 
 cd $ADDRESS
 export BOARD=de10-nano
 make app APP=$APP comp

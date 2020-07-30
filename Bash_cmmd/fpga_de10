@@ -12,6 +12,6 @@ make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=de10-nano
 echo "${green}${white}======== Building Quartus project ========${reset}"
 make synth
 echo "${green}${white}======== Download Patmos on board ========${reset}"
-make config
+echo "${green}Please download Patmos through Quartus Prime on the board"
 echo "${green}${white}======== Compile and download hello APP ========${reset}"
 make app APP=hello_puts tools comp download
