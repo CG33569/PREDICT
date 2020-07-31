@@ -8,5 +8,5 @@ LDFLAGS?= \
         -Xgold --defsym -Xgold __heap_end=0x070000
 
 all:
-	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o gps_run.elf -lm
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o GPS_raspberry.elf -lm
 
