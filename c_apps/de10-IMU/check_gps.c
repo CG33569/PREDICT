@@ -8,13 +8,35 @@
 
 #define UART2 ((volatile _IODEV unsigned *)PATMOS_IO_UART2)
 #define I2C ( *( ( volatile _IODEV unsigned * ) PATMOS_IO_I2C ) )
+//motors
+#define MOTOR ( ( volatile _IODEV unsigned * )  PATMOS_IO_ACT+0x10 )
+#define m1 0
+#define m2 1
+#define m3 2
+#define m4 3
+//Receiver controller
+#define RECEIVER ( ( volatile _IODEV unsigned * ) PATMOS_IO_ACT )
 
+const unsigned int CPU_PERIOD = 20; //CPU period in ns.
 #define compass_address 0x1E
 
 unsigned char gps_data=0;
 float compass_x, compass_y, compass_z;
 int loop_counter;
 
+void actuator_write(unsigned int actuator_id, unsigned int data)
+{
+  *(MOTOR + actuator_id) = data;
+}
+
+//Reads from propulsion specified by propulsion ID (0 to 4)
+int receiver_read(unsigned int receiver_id){
+  return *(RECEIVER + receiver_id);
+  unsigned int clock_cycles_counted = *(RECEIVER + receiver_id);
+  unsigned int pulse_high_time = (clock_cycles_counted * CPU_PERIOD) / 1000;
+
+  return pulse_high_time;
+}
 
 void delay(int milliseconds)
 {
@@ -243,7 +265,12 @@ void check_gps(void) {
 int main(int argc, char **argv)
 {
   printf("Hello GPS!\n");
-  set_compass_registers();
+  // set_compass_registers();
+
+  actuator_write(m1, 1000);                                               //give motors 1000us pulse.
+  actuator_write(m2, 1000);
+  actuator_write(m3, 1000);
+  actuator_write(m4, 1000);
   //for (int i = 0; i < 5; i++) {
   for (int j=0;j<1000;j++)
   // while(1)
