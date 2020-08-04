@@ -1,7 +1,12 @@
 # Edit next two values:
+#export APP=de10-IMU
+#export MAIN=check_gps
 export APP=drone-motor
 export MAIN=motor_test
+#export APP=de10-nano
+#export MAIN=hello_MPU6050
 
+export REPOS=~/repos/PREDICT/c_apps
 export ADDRESS=~/t-crest/patmos
 
 # Let everything else run:
@@ -11,7 +16,9 @@ reset=`tput sgr0`
 echo "${green}======== Generating C app in Patmos directory... ========${reset}"
 echo "APP = "$APP
 rm -rf $ADDRESS/c/apps/$APP
+rm -rf $ADDRESS/tmp/$APP.elf
 mkdir $ADDRESS/c/apps/$APP
+cd $REPOS
 cp $APP/* $ADDRESS/c/apps/$APP
 echo "Copy process done."
 echo "${green}======== Compiling C app in Patmos ========${reset}"

@@ -58,16 +58,24 @@ cd ..
 ![](info/makefile.png)
 
 
-4. Finally, build the patmos architechture for the board, which includes building its corresponding Quartus Prime project.
+4. FPGA de10-nano only: the 2nd UART (GPS) has a 9600 Baud Rate. Since this has not been officially updated yet, the .xml file must be modified and the configuration re-built. There is a copy in this repository of the file which can be copied.
+```
+rm -rf ~/t-crest/patmos/hardware/build
+rm -rf ~/t-crest/patmos/hardware/config/de10-nano.xml
+cp ~/PREDICT/Bash_cmmd/de10-nano.xml ~/t-crest/patmos/hardware/config
+```
+
+
+5. Finally, build the patmos architechture for the board, which includes building its corresponding Quartus Prime project.
 ```
 cd ~/t-crest/patmos
-export BOARD=altde2-115
-make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=altde2-115
+export BOARD=de10-nano
+make gen
+make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=de10-nano
 make synth
 ```
 
-
-5. Optional: re-build the architecture tools.
+6. Optional: re-build the architecture tools.
 ```
 cd ~/t-crest/patmos
 make tools
@@ -139,7 +147,11 @@ Now the name of the app should be the same as the .elf file and it's the one tha
 *More complex apps*
 
 
-2. Place in the folder the .c files, .sh libraries and a Makefile.
+2. Place in the folder the .c files, .sh .h libraries and a Makefile. Tip: include an additional .elf file generation on the tmp folder, to make sure that the code is updated before downloading.
+```
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o de10-IMU.elf -lm
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o ~/t-crest/patmos/tmp/de10-IMU.elf -lm
+```
 
 
 3. Build the complete folder. Take the other apps as examples. This is possible through two ways:
@@ -221,11 +233,12 @@ cd ~/Your patmos location here/patmos
 make BOOTAPP=bootable-bootloader APP=hello_puts tools download
 ```
 
+
 ![](info/de2115_helloworld.png)
 
 In case of error:
 * _Port not found_ : review the rules and UART-USB connection.
 * _Port denied_ : review the user access.
-* _Receiver did not reply correctly (expected 62 got 10)_ : this can happen with any other numbers for "expected" and "got". Once a c app has been successfully downloaded, the UART is usually no longer receptive to download apps. To fix this, re-plug the USB-UART to the laptop (maybe more than once). If after some tries, it still does not work, re-boot the FPGA and reload patmos and the app.
+* _Receiver did not reply correctly (expected 62 got 10)_ : this can happen with any other numbers for "expected" and "got". Once a c app has been successfully downloaded, the UART is usually no longer receptive to download apps. To fix this, re-plug the USB-UART to the laptop (maybe more than once). If after some tries, it still does not work, reload patmos and the app. Try to re-start the board as well.
 * (After downloading process) _Exception Timeout_: problem with the bus wires. The laptop was able to communicate with the bus, but the info did not reach the board. Review the pins/cable adapter and re-boot the FPGA.
 * Other errors: maybe it's a hardware problem change cable or re-try with another board if the two previous points are OK. For more info, review the pins assignment and the corresponding manuals.

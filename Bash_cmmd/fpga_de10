@@ -1,17 +1,26 @@
 # Edit the repository address:
 export REPOS=~/t-crest
+export PRED=~/repos/PREDICT
 
 # Let everything else run:
 white=`tput setab 7`
 green=`tput setaf 2`
 reset=`tput sgr0`
 cd $REPOS/patmos
-echo "${green}${white}======== Update hardware description ========${reset}"
+echo "${green}${white}======== Updating hardware description ========${reset}"
 export BOARD=de10-nano
+
+# Uncomment the following lines if this is the first time running this:
+rm -rf $REPOS/patmos/hardware/build
+rm -rf $REPOS/patmos/hardware/config/de10-nano.xml
+cp $PRED/Bash_cmmd/de10-nano.xml $REPOS/patmos/hardware/config
+#------------
+
+make gen
 make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=de10-nano
 echo "${green}${white}======== Building Quartus project ========${reset}"
 make synth
 echo "${green}${white}======== Download Patmos on board ========${reset}"
-echo "${green}Please download Patmos through Quartus Prime on the board"
+echo "Make this from Quartus Prime"
 echo "${green}${white}======== Compile and download hello APP ========${reset}"
 make app APP=hello_puts tools comp download
