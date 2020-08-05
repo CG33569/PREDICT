@@ -1,8 +1,10 @@
 # Edit next two values:
 #export APP=de10-IMU
 #export MAIN=check_gps
-export APP=drone-motor
-export MAIN=motor_test
+export APP=Neo6M
+export MAIN=SoftwareSerial
+#export APP=drone-motor
+#export MAIN=motor_test
 #export APP=de10-nano
 #export MAIN=hello_MPU6050
 

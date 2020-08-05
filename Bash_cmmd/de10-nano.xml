@@ -2,6 +2,9 @@
   <description>Configuration for de10-nano board with on-chip memory</description>
 
   <frequency Hz="50000000"/>
+  
+  <cores count="1"/>
+    
   <pipeline dual="false" />
 
   <ExtMem size="500k" DevTypeRef="OCRam" />

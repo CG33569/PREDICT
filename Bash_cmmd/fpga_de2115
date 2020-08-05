@@ -1,5 +1,6 @@
 # Edit the repository address:
 export REPOS=~/t-crest
+export PRED=~/repos/PREDICT
 
 # Let everything else run:
 white=`tput setab 7`
@@ -9,6 +10,14 @@ cd $REPOS/patmos
 echo "${green}${white}======== Update hardware description ========${reset}"
 # build board and patmos architechture
 export BOARD=altde2-115
+
+# Uncomment the following lines if this is the first time running this:
+rm -rf $REPOS/patmos/hardware/build
+rm -rf $REPOS/patmos/hardware/config/altde2-115.xml
+cp $PRED/Bash_cmmd/altde2-115.xml $REPOS/patmos/hardware/config
+#------------
+
+make gen
 make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=altde2-115
 echo "${green}${white}======== Building Quartus project ========${reset}"
 make synth

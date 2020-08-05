@@ -1,4 +1,4 @@
-MAIN?=check_gps
+MAIN?=SoftwareSerial
 APPLI?=Neo6M
 
 # This is the trivial Hello World example, distributed over two .c files
