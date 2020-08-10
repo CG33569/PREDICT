@@ -1,0 +1,17 @@
+# Let everything run:
+white=`tput setab 7`
+green=`tput setaf 2`
+reset=`tput sgr0`
+echo "${green}${white}======== Creating directory ========${reset}"
+cd
+mkdir t-crest
+cd ~/t-crest
+echo "Creating finished."
+echo "${green}${white}======== Cloning repositories ========${reset}"
+git clone https://github.com/t-crest/aegean.git
+git clone https://github.com/t-crest/argo.git
+git clone https://github.com/t-crest/patmos-compiler-rt.git
+git clone https://github.com/t-crest/patmos-gold.git
+git clone https://github.com/t-crest/patmos-llvm.git
+git clone https://github.com/t-crest/patmos-misc.git
+git clone https://github.com/t-crest/patmos-newlib.git
