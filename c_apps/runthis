@@ -2,7 +2,7 @@
 #export APP=de10-IMU
 #export MAIN=check_gps
 export APP=Neo6M
-export MAIN=SoftwareSerial
+export MAIN=TinyGPS
 #export APP=drone-motor
 #export MAIN=motor_test
 #export APP=de10-nano
@@ -25,8 +25,7 @@ cp $APP/* $ADDRESS/c/apps/$APP
 echo "Copy process done."
 echo "${green}======== Compiling C app in Patmos ========${reset}"
 cd $ADDRESS/c/apps/$APP
-#make all
-patmos-clang -o $ADDRESS/tmp/$APP.elf $MAIN.c 
+make
 cd $ADDRESS
 export BOARD=de10-nano
 make app APP=$APP comp

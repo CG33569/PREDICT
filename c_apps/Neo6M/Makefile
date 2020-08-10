@@ -1,4 +1,5 @@
-MAIN?=SoftwareSerial
+#MAIN?=check_gps
+MAIN?=TinyGPS
 APPLI?=Neo6M
 
 # This is the trivial Hello World example, distributed over two .c files
@@ -9,5 +10,5 @@ LDFLAGS?= \
         -Xgold --defsym -Xgold __heap_end=0x070000
 
 all:
-	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o $(APPLI) -lm
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o $(APPLI).elf -lm
 	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o ~/t-crest/patmos/tmp/$(APPLI).elf -lm
