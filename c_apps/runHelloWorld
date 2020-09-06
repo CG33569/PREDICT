@@ -1,6 +1,8 @@
 # Edit next two values:
-export APP=de10-IMU
-export MAIN=Flight_controller
+#export APP=de10-IMU
+#export MAIN=Flight_controller
+export APP=mark
+export MAIN=main
 
 export REPOS=~/repos/PREDICT/c_apps
 export ADDRESS=~/t-crest/patmos
@@ -24,4 +26,4 @@ cd $ADDRESS
 export BOARD=de10-nano
 make app APP=$APP comp
 echo "${green}======== Download code on board ========${reset}"
-make app APP=$APP download || make app APP=$APP download COM_PORT=/dev/ttyUSB1 || make app APP=$APP download COM_PORT=/dev/ttyUSB2 || make app APP=$APP download COM_PORT=/dev/ttyUSB3
+make app APP=$APP download || make app APP=$APP download COM_PORT=/dev/ttyUSB1

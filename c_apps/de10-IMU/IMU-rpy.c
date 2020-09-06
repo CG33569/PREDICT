@@ -50,6 +50,36 @@ void delay(int milliseconds)
 #define MPU6050_ACCEL_CONFIG       0x1C   // R
 #define MPU6050_CONFIG_REG         0x1A   // R
 
+//motors
+#define MOTOR ( ( volatile _IODEV unsigned * )  PATMOS_IO_ACT+0x10 )
+#define m1 0
+#define m2 1
+#define m3 2
+#define m4 3
+//Receiver controller
+#define RECEIVER ( ( volatile _IODEV unsigned * ) PATMOS_IO_ACT )
+
+const unsigned int CPU_PERIOD = 20; //CPU period in ns.
+#define compass_address 0x1E
+
+unsigned char gps_data=0;
+float compass_x, compass_y, compass_z;
+int loop_counter;
+
+void actuator_write(unsigned int actuator_id, unsigned int data)
+{
+  *(MOTOR + actuator_id) = data;
+}
+
+//Reads from propulsion specified by propulsion ID (0 to 4)
+int receiver_read(unsigned int receiver_id){
+  return *(RECEIVER + receiver_id);
+  unsigned int clock_cycles_counted = *(RECEIVER + receiver_id);
+  unsigned int pulse_high_time = (clock_cycles_counted * CPU_PERIOD) / 1000;
+
+  return pulse_high_time;
+}
+
 unsigned long loop_timer;
 int temperature=0;
 double acc_x=0, acc_y=0, acc_z=0, acc_total_vector=0;
@@ -200,14 +230,19 @@ int main(int argc, char **argv)
   printf("PWR_MGMT_1 = 0x%.2X\n", i2c_read(MPU6050_I2C_ADDRESS, MPU6050_PWR_MGMT_1));
   printf("Getting MPU-6050 out of sleep mode.\n");
 
+  actuator_write(m1, 1000);                                               //give motors 1000us pulse.
+  actuator_write(m2, 1000);
+  actuator_write(m3, 1000);
+  actuator_write(m4, 1000);
+
   set_gyro_registers();
 
   loop_timer = get_cpu_usecs();
   //for (int i = 0; i < 5; i++) {
-  for (int j=0;j<3000;j++)
-  // while(1)
+  // for (int j=0;j<3000;j++)
+  while(1)
   {
-    while(loop_timer + 4000 > get_cpu_usecs());                                                  //Start the pulse after 4000 micro seconds.
+    while(loop_timer + 8000 > get_cpu_usecs());                                                  //Start the pulse after 4000 micro seconds.
     loop_timer = get_cpu_usecs();                                                                //Reset the zero timer.
 
     // printf("initial loop_timer:  %d\n", loop_timer);
@@ -234,11 +269,11 @@ int main(int argc, char **argv)
         gyro_signalen();
 
 
-        angle_pitch += gyro_pitch * 0.0000611;                                           //Calculate the traveled pitch angle and add this to the angle_pitch variable.
-        angle_roll += gyro_roll * 0.0000611;                                             //Calculate the traveled roll angle and add this to the angle_roll variable.
+        angle_pitch += gyro_pitch * 0.0000611*2;                                           //Calculate the traveled pitch angle and add this to the angle_pitch variable.
+        angle_roll += gyro_roll * 0.0000611*2;                                             //Calculate the traveled roll angle and add this to the angle_roll variable.
 
-        angle_pitch -= angle_roll * sin(gyro_yaw * 0.000001066);                         //If the IMU has yawed transfer the roll angle to the pitch angel.
-        angle_roll += angle_pitch * sin(gyro_yaw * 0.000001066);                         //If the IMU has yawed transfer the pitch angle to the roll angel.
+        angle_pitch -= angle_roll * sin(gyro_yaw * 0.000001066*2);                         //If the IMU has yawed transfer the roll angle to the pitch angel.
+        angle_roll += angle_pitch * sin(gyro_yaw * 0.000001066*2);                         //If the IMU has yawed transfer the pitch angle to the roll angel.
 
         //Accelerometer angle calculations
         acc_total_vector = sqrt((acc_x*acc_x)+(acc_y*acc_y)+(acc_z*acc_z));           //Calculate the total accelerometer vector.
@@ -248,8 +283,8 @@ int main(int argc, char **argv)
         angle_pitch_acc = asin(acc_y/acc_total_vector)* 57.296;                //Calculate the pitch angle.
         angle_roll_acc = asin(acc_x/acc_total_vector)* -57.296;                //Calculate the roll angle.
         
-        angle_pitch_acc += 5.37;                                                   //Accelerometer calibration value for pitch.
-        angle_roll_acc += 0.24;                                                    //Accelerometer calibration value for roll.
+        angle_pitch_acc -= 5.6;                                                   //Accelerometer calibration value for pitch.
+        angle_roll_acc += 1.9;                                                    //Accelerometer calibration value for roll.
   
 
         if(!first_angle)
@@ -285,6 +320,4 @@ int main(int argc, char **argv)
   }
   return 0;
 }
-  
-  
   

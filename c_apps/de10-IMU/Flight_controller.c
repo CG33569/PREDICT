@@ -9,9 +9,10 @@
 #include <stdbool.h>
 #include <math.h>
 #include <machine/rtc.h>
+#include <signal.h>
 
-
-//channel 1- roll
+#define battery_voltage_available 0
+ //channel 1- roll
 // channel 2 - pitch
 // channel 3- throttle
 // channel 4- yaw
@@ -63,6 +64,26 @@
 
 const unsigned int CPU_PERIOD = 20; //CPU period in ns.
 
+//--------------------------------------------------------------------------------------------
+//                      Left Stick                                   Right stick
+//
+//                    Channel 3 - 2000                             Channel 2 - 1000
+//
+//                          o                                              o
+//                          |                                              |
+//                          |                                              |
+//   yaw                    |                        roll                  |
+//  Channel 4 1000 o--------o--------o 2000        Channel 1 1000 o--------o--------o 2000 
+//                          |                                              |
+//                          |                                              |
+//                          |                                              |
+//                          o                                              o
+//
+//                    Channel 3 - 1000                             Channel 2 - 2000
+//                        throttle                                        pitch
+//
+//---------------------------------------------------------------------------------------------
+
 
 ///////////initialization
 
@@ -74,6 +95,7 @@ int cal_int=0, loop_counter=0;
 double gyro_axis_cal[4]={0.0,0.0,0.0,0.0};
 int gyro_address = MPU6050_I2C_ADDRESS;
 bool first_angle=false;
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PID gain and limit settings
@@ -102,7 +124,13 @@ int low[5]={0,1068,1100,1108,1068}, center[5]={0,1488,1504,1504,1468}, high[5]={
 unsigned int  last_channel_1, last_channel_2, last_channel_3, last_channel_4;
 unsigned int  eeprom_data[36];
 unsigned int  highByte, lowByte;
-volatile int receiver_input_channel_1, receiver_input_channel_2, receiver_input_channel_3, receiver_input_channel_4;
+
+// Input channels of the remote controllers
+volatile int receiver_input_channel_1;  // receiver signals for roll
+volatile int receiver_input_channel_2;  // receiver signals for pitch
+volatile int receiver_input_channel_3;  // receiver signals for throttle
+volatile int receiver_input_channel_4;  // receiver signals for yaw
+
 int counter_channel_1, counter_channel_2, counter_channel_3, counter_channel_4;
 int esc_1, esc_2, esc_3, esc_4;
 int throttle, battery_voltage;
@@ -117,7 +145,9 @@ float pid_error_temp;
 float pid_i_mem_roll, pid_roll_setpoint, gyro_roll_input=0.0, pid_output_roll, pid_last_roll_d_error;
 float pid_i_mem_pitch, pid_pitch_setpoint, gyro_pitch_input=0.0, pid_output_pitch, pid_last_pitch_d_error;
 float pid_i_mem_yaw, pid_yaw_setpoint, gyro_yaw_input=0.0, pid_output_yaw, pid_last_yaw_d_error;
-float angle_roll_acc, angle_pitch_acc, angle_pitch, angle_roll;
+float angle_roll_acc, angle_pitch_acc, angle_pitch, angle_roll, angle_pitch_diff, angle_roll_diff;
+float prev_angle_pitch= 0;
+float prev_angle_roll = 0;
 bool gyro_angles_set;
 
 unsigned int signature = 0;
@@ -136,6 +166,8 @@ unsigned int GYRO_Y_L = 0;
 unsigned int GYRO_Z_H = 0;
 unsigned int GYRO_Z_L = 0;
 
+
+
 float batteryRead()
 {
   return *(BATTERY);
@@ -148,7 +180,7 @@ void actuator_write(unsigned int actuator_id, unsigned int data)
 
 //Reads from propulsion specified by propulsion ID (0 to 4)
 int receiver_read(unsigned int receiver_id){
-  return *(RECEIVER + receiver_id);
+
   unsigned int clock_cycles_counted = *(RECEIVER + receiver_id);
   unsigned int pulse_high_time = (clock_cycles_counted * CPU_PERIOD) / 1000;
 
@@ -208,7 +240,7 @@ void LED_out(int i){
 
 // interrupt handler
 void intr_handler(void) {
-  exc_prologue();
+  // exc_prologue();
 
   // read the receiver pwm duty cycle
   receiver_input[1] = receiver_read(0);
@@ -216,7 +248,7 @@ void intr_handler(void) {
   receiver_input[3] = receiver_read(2);
   receiver_input[4] = receiver_read(3);
 
-  exc_epilogue();
+  // exc_epilogue();
 }
 
 void set_gyro_registers()
@@ -285,7 +317,7 @@ int convert_receiver_channel(unsigned int function)
 
   if(function==1)
   {
-    reverse = 1;                      //Reverse channel when most significant bit is set
+    reverse = 0;                      //Reverse channel when most significant bit is set
     channel =2;
   }
   else if(function==2)
@@ -295,7 +327,7 @@ int convert_receiver_channel(unsigned int function)
   }
   else if(function==3)
   {
-    reverse = 1;
+    reverse = 0;
     channel=1;
   }
   else
@@ -385,6 +417,7 @@ void gyro_signalen()
    // printf("GYRO_Z  = 0x%.2X%.2X (%d)\n", GYRO_Z_H, GYRO_Z_L, (short int)((GYRO_Z_H << 8) | GYRO_Z_L));
 }
 
+
 int main(int argc, char **argv)
 {
 
@@ -396,14 +429,14 @@ int main(int argc, char **argv)
 
   set_gyro_registers();
 
-  for (cal_int = 0; cal_int < 1250 ; cal_int ++)
-  {                                                                         //Wait 5 seconds before continuing.
-    actuator_write(m1, 1000);                                               //give motors 1000us pulse.
-    actuator_write(m2, 1000);
-    actuator_write(m3, 1000);
-    actuator_write(m4, 1000);
+  // for (cal_int = 0; cal_int < 1250 ; cal_int ++)
+  // {                                                                         //Wait 5 seconds before continuing.
+  actuator_write(m1, 1000);                                               //give motors 1000us pulse.
+  actuator_write(m2, 1000);
+  actuator_write(m3, 1000);
+  actuator_write(m4, 1000);
     // micros(3000);  
-  }
+  // }
 
   //Let's take multiple gyro data samples so we can determine the average gyro offset (calibration).
   for (cal_int = 0; cal_int < 2000 ; cal_int ++){                           //Take 2000 readings for calibration.
@@ -417,33 +450,40 @@ int main(int argc, char **argv)
     actuator_write(m2, 1000);
     actuator_write(m3, 1000);
     actuator_write(m4, 1000);
-    // micros(3000);                                                                 //Wait 3 milliseconds before the next loop.
+    micros(3000);                                                                 //Wait 3 milliseconds before the next loop.
   }
   //Now that we have 2000 measures, we need to devide by 2000 to get the average gyro offset.
   gyro_axis_cal[1] /= 2000;                                                 //Divide the roll total by 2000.
   gyro_axis_cal[2] /= 2000;                                                 //Divide the pitch total by 2000.
   gyro_axis_cal[3] /= 2000;                                                 //Divide the yaw total by 2000.
 
+  printf("gyro callibration done\n");
   //interrpt declaration
   // register exception handler
-  exc_register(14, &intr_handler);
-  exc_register(16, &intr_handler);
-  exc_register(18, &intr_handler);
-  exc_register(20, &intr_handler);
+  // exc_register(14, &intr_handler);
+  // exc_register(16, &intr_handler);
+  // exc_register(18, &intr_handler);
+  // exc_register(20, &intr_handler);
 
-  // unmask interrupts
-  intr_unmask_all();
-  // clear pending flags
-  intr_clear_all_pending();
-  // enable interrupts
-  intr_enable();
+  // // unmask interrupts
+  // intr_unmask_all();
+  // // clear pending flags
+  // intr_clear_all_pending();
+  // // enable interrupts
+  // intr_enable();
+
+  // getting receiver information
+  intr_handler();
 
 
   //Wait until the receiver is active and the throtle is set to the lower position.
   while(receiver_input_channel_3 < 990 || receiver_input_channel_3 > 1020 || receiver_input_channel_4 < 1400)
   {
+    // printf("throttle down\n");
+    intr_handler();
     receiver_input_channel_3 = convert_receiver_channel(3);                 //Convert the actual receiver signals for throttle to the standard 1000 - 2000us
     receiver_input_channel_4 = convert_receiver_channel(4);                 //Convert the actual receiver signals for yaw to the standard 1000 - 2000us
+    // printf("receiver_input_channel_3:%d receiver_input_channel_4:%d\n", receiver_input_channel_3,receiver_input_channel_4);
     start ++;                                                               //While waiting increment start whith every loop.
     //We don't want the esc's to be beeping annoyingly. So let's give them a 1000us puls while waiting for the receiver inputs.
 
@@ -457,6 +497,7 @@ int main(int argc, char **argv)
       start = 0;                                                            //Start again at 0.
     }
   }
+  printf("throttle in safe position"); 
   start = 0;                                                                //Set start back to 0.
 
   //Load the battery voltage to the battery_voltage variable.
@@ -465,8 +506,10 @@ int main(int argc, char **argv)
   //12.6V equals 1023 analogRead(0).
   //1260 / 1023 = 1.2317.
   //The variable battery_voltage holds 1050 if the battery voltage is 10.5V.
-  battery_voltage = (batteryRead() + 65) * 1.2317;
-
+  if(battery_voltage_available)
+  {
+    battery_voltage = (batteryRead() + 65) * 1.2317;
+  }
   loop_timer = get_cpu_usecs();                                                    //Set the timer for the next loop.
 
   //When everything is done, turn off the led.
@@ -475,8 +518,12 @@ int main(int argc, char **argv)
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Main program loop
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for (int j=0;j<10000;j++)
+  // for (int j=0;j<10000;j++)
+  while(1)
   {
+
+    // getting receiver information
+    intr_handler();
 
     //65.5 = 1 deg/sec (check the datasheet of the MPU-6050 for more information).
     gyro_roll_input = (gyro_roll_input * 0.7) + ((gyro_roll / 65.5) * 0.3);   //Gyro pid input is deg/sec.
@@ -510,11 +557,19 @@ int main(int argc, char **argv)
     }
     
     //Place the MPU-6050 spirit level and note the values in the following two lines for calibration.
-    angle_pitch_acc += 5.3;                                                   //Accelerometer calibration value for pitch.
-    angle_roll_acc += 0.11;                                                    //Accelerometer calibration value for roll.
+    angle_pitch_acc += 0;                                                   //Accelerometer calibration value for pitch.
+    angle_roll_acc += 0;                                                    //Accelerometer calibration value for roll.
     
     angle_pitch = angle_pitch * 0.9996 + angle_pitch_acc * 0.0004;            //Correct the drift of the gyro pitch angle with the accelerometer pitch angle.
     angle_roll = angle_roll * 0.9996 + angle_roll_acc * 0.0004;               //Correct the drift of the gyro roll angle with the accelerometer roll angle.
+
+    //printf("Gyro Pitch: %f Gyro Roll: %f        ",gyro_pitch,gyro_roll );
+    //printf("Angle Pitch: %f Angle Roll: %f        ",angle_pitch,angle_roll );
+    angle_pitch_diff = angle_pitch - prev_angle_pitch;
+    angle_roll_diff = angle_roll - prev_angle_roll;
+    printf("Pitch difference: %f Roll difference: %f\n",angle_pitch_diff,angle_roll_diff );
+    prev_angle_roll = angle_roll;
+    prev_angle_pitch = angle_pitch;
 
     pitch_level_adjust = angle_pitch * 15;                                    //Calculate the pitch angle correction
     roll_level_adjust = angle_roll * 15;                                      //Calculate the roll angle correction
@@ -524,11 +579,18 @@ int main(int argc, char **argv)
       roll_level_adjust = 0;                                                  //Set the roll angle correcion to zero.
     }
 
+    // getting receiver information
+    intr_handler();
+
 
     //For starting the motors: throttle low and yaw left (step 1).
-    if(receiver_input_channel_3 < 1050 && receiver_input_channel_4 < 1050)start = 1;
+    if(receiver_input_channel_3 < 1050 && receiver_input_channel_4 < 1050)
+    {
+      start = 1;
+    }
     //When yaw stick is back in the center position start the motors (step 2).
     if(start == 1 && receiver_input_channel_3 < 1050 && receiver_input_channel_4 > 1450){
+      // printf("yaw center\n");
       start = 2;
 
       angle_pitch = angle_pitch_acc;                                          //Set the gyro pitch angle equal to the accelerometer pitch angle when the quadcopter is started.
@@ -544,7 +606,17 @@ int main(int argc, char **argv)
       pid_last_yaw_d_error = 0;
     }
     //Stopping the motors: throttle low and yaw right.
-    if(start == 2 && receiver_input_channel_3 < 1050 && receiver_input_channel_4 > 1950)start = 0;
+    if(start == 2 && receiver_input_channel_3 < 1050 && receiver_input_channel_4 > 1950)
+    {
+      start = 0;
+      // printf("motors stop\n");
+    }
+
+    //Stopping the motors and exiting the program: throttle low and yaw right, pitch low, roll left.
+    if(receiver_input_channel_3 < 1050 && receiver_input_channel_4 > 1950 && receiver_input_channel_1 < 1050 && receiver_input_channel_2 > 1950 )
+    {
+      start = -1;
+    }
 
     //The PID set point in degrees per second is determined by the roll receiver input.
     //In the case of deviding by 3 the max roll rate is aprox 164 degrees per second ( (500-8)/3 = 164d/s ).
@@ -578,14 +650,22 @@ int main(int argc, char **argv)
     
     calculate_pid();                                                            //PID inputs are known. So we can calculate the pid output.
 
+    // getting receiver information
+    intr_handler();
+
+
     //The battery voltage is needed for compensation.
     //A complementary filter is used to reduce noise.
     //0.09853 = 0.08 * 1.2317.
-    battery_voltage = battery_voltage * 0.92 + (batteryRead() + 65) * 0.09853;
-
+    if(battery_voltage_available)
+    { 
+      battery_voltage = battery_voltage * 0.92 + (batteryRead() + 65) * 0.09853;
+    }
     //Turn on the led if battery voltage is to low.
-    if(battery_voltage < 1000 && battery_voltage > 600)LED_out(1);
-
+    if(battery_voltage_available)
+    {
+      if(battery_voltage < 1000 && battery_voltage > 600)LED_out(1);
+    }
 
     throttle = receiver_input_channel_3;                                      //We need the throttle signal as a base signal.
 
@@ -596,12 +676,15 @@ int main(int argc, char **argv)
       esc_3 = throttle + pid_output_pitch - pid_output_roll - pid_output_yaw; //Calculate the pulse for esc 3 (rear-left - CCW)
       esc_4 = throttle - pid_output_pitch - pid_output_roll + pid_output_yaw; //Calculate the pulse for esc 4 (front-left - CW)
 
-      if (battery_voltage < 1240 && battery_voltage > 800){                   //Is the battery connected?
-        esc_1 += esc_1 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-1 pulse for voltage drop.
-        esc_2 += esc_2 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-2 pulse for voltage drop.
-        esc_3 += esc_3 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-3 pulse for voltage drop.
-        esc_4 += esc_4 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-4 pulse for voltage drop.
-      } 
+      if(battery_voltage_available)
+      {
+        if (battery_voltage < 1240 && battery_voltage > 800){                   //Is the battery connected?
+          esc_1 += esc_1 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-1 pulse for voltage drop.
+          esc_2 += esc_2 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-2 pulse for voltage drop.
+          esc_3 += esc_3 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-3 pulse for voltage drop.
+          esc_4 += esc_4 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-4 pulse for voltage drop.
+        } 
+      }
 
       if (esc_1 < 1100) esc_1 = 1100;                                         //Keep the motors running.
       if (esc_2 < 1100) esc_2 = 1100;                                         //Keep the motors running.
@@ -613,13 +696,15 @@ int main(int argc, char **argv)
       if(esc_3 > 2000)esc_3 = 2000;                                           //Limit the esc-3 pulse to 2000us.
       if(esc_4 > 2000)esc_4 = 2000;                                           //Limit the esc-4 pulse to 2000us.  
     }
-
     else{
       esc_1 = 1000;                                                           //If start is not 2 keep a 1000us pulse for ess-1.
       esc_2 = 1000;                                                           //If start is not 2 keep a 1000us pulse for ess-2.
       esc_3 = 1000;                                                           //If start is not 2 keep a 1000us pulse for ess-3.
       esc_4 = 1000;                                                           //If start is not 2 keep a 1000us pulse for ess-4.
     }
+
+    // getting receiver information
+    intr_handler();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //Creating the pulses for the ESC's is explained in this video:
@@ -637,9 +722,12 @@ int main(int argc, char **argv)
     
     //All the information for controlling the motor's is available.
     //The refresh rate is 250Hz. That means the esc's need there pulse every 4ms.
-    while(get_cpu_usecs() - loop_timer < 4000);                                      //We wait until 4000us are passed.
+    while(get_cpu_usecs() - loop_timer < 4000);                                      //We wait until 4000us are passed.\
+    
     loop_timer = get_cpu_usecs();                                                    //Set the timer for the next loop.
 
+    // printf("esc1:%d esc2:%d esc3:%d esc4:%d\n",esc_1, esc_2, esc_3, esc_4 );
+    
     //esc pwm write
     actuator_write(m1, esc_1);
     actuator_write(m2, esc_2);
@@ -650,6 +738,7 @@ int main(int argc, char **argv)
     //Get the current gyro and receiver data and scale it to degrees per second for the pid calculations.
     gyro_signalen();
 
+    if (start == -1) break;
   }
   return 0;
 }

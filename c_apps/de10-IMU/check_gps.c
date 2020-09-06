@@ -272,7 +272,7 @@ int main(int argc, char **argv)
   actuator_write(m3, 1000);
   actuator_write(m4, 1000);
   //for (int i = 0; i < 5; i++) {
-  for (int j=0;j<1000;j++)
+  for (int j=0;j<10;j++)
   // while(1)
   {
     // while(loop_timer + 4000 > get_cpu_usecs());                                                  //Start the pulse after 4000 micro seconds.
