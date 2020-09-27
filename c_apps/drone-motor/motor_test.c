@@ -24,14 +24,14 @@ int main() {
  actuator_write(2, 1000);
  actuator_write(3, 1000);
 
- for (i=0; i<3; ++i) {
+ for (i=0; i<5; ++i) {
 
  // 2 Seconds wait for initialization
  timer_ms = (get_cpu_usecs()/MS_TO_US);
  loop_timer = timer_ms;
  while(timer_ms - loop_timer < 2000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
 
- printf("--Start\n");
+ printf("--Start %d\n\r",i);
  	 //Test motor 1
 	 actuator_write(0, 1300);
 	 actuator_write(1, 1000);
@@ -43,6 +43,7 @@ int main() {
 	 while(timer_ms - loop_timer < 5000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
 
  	 //Test motor 2
+	 printf("Test motor 2\n\r");
 	 actuator_write(0, 1000);
 	 actuator_write(1, 1300);
 	 actuator_write(2, 1000);
@@ -53,6 +54,7 @@ int main() {
 	 while(timer_ms - loop_timer < 5000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
 
  	 //Test motor 3
+	 printf("Test motor 3\n\r");
 	 actuator_write(0, 1000);
 	 actuator_write(1, 1000);
 	 actuator_write(2, 1300);
@@ -63,6 +65,7 @@ int main() {
 	 while(timer_ms - loop_timer < 5000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
 
  	 //Test motor 4
+	 printf("Test motor 4\n\r");
 	 actuator_write(0, 1000);
 	 actuator_write(1, 1000);
 	 actuator_write(2, 1000);
@@ -71,11 +74,12 @@ int main() {
 	 timer_ms = (get_cpu_usecs()/MS_TO_US);
 	 loop_timer = timer_ms;
 	 while(timer_ms - loop_timer < 5000){timer_ms = (get_cpu_usecs()/MS_TO_US);}
-	 printf("--End.\n");
+	 printf("--End.\n\r");
 
 	}
 
 	 // Stop the motors before exit the programme
+	 printf("THE END HAHAHAHAHAHA 2\n\r");
 	 actuator_write(0, 1000);
 	 actuator_write(1, 1000);
 	 actuator_write(2, 1000);

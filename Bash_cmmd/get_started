@@ -10,8 +10,8 @@ echo "Creating finished."
 echo "${green}${white}======== Cloning repositories ========${reset}"
 git clone https://github.com/t-crest/aegean.git
 git clone https://github.com/t-crest/argo.git
-git clone https://github.com/t-crest/patmos-compiler-rt.git
-git clone https://github.com/t-crest/patmos-gold.git
-git clone https://github.com/t-crest/patmos-llvm.git
-git clone https://github.com/t-crest/patmos-misc.git
-git clone https://github.com/t-crest/patmos-newlib.git
+git clone https://github.com/t-crest/patmos-compiler-rt.git compiler-rt
+git clone https://github.com/t-crest/patmos-gold.git gold
+git clone https://github.com/t-crest/patmos-llvm.git llvm
+git clone https://github.com/t-crest/patmos-misc.git misc
+git clone https://github.com/t-crest/patmos-newlib.git newlib
