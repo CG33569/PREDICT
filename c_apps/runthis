@@ -1,7 +1,9 @@
 # Edit next two values:
-export APP=de10-IMU
-export MAIN=barometer_test
+#export APP=de10-IMU
+#export MAIN=barometer_test
 #export MAIN=MS5611-try
+export APP=serial
+export MAIN=main
 
 export REPOS=~/repos/PREDICT/c_apps
 export ADDRESS=~/t-crest/patmos

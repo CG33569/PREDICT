@@ -2,6 +2,7 @@
 #include <machine/patmos.h>
 #include <machine/rtc.h>
 #include "demo_tasks.h"
+#include <string.h>
 
 #define LED (*((volatile _IODEV unsigned *)PATMOS_IO_LED))
 

@@ -19,7 +19,6 @@ const unsigned int CPU_PERIOD = 20; //CPU period in ns.
 int loop_counter;
 unsigned char uart_data=0;
 
-struct gps_tpv tpv;
 int result;
 //---- to filter Data
 char str[500];
@@ -112,7 +111,7 @@ void check_telemetry(void) {
         //The delimiter "$" is 36 in ASCII
         if(uart_data == 36){
           b_temp = true;
-          printf("Test: found beginning\n")
+          printf("Test: found beginning\n");
         }
         if(b_temp && (start_temp<end_temp)){
           str_temp[start_temp]=uart_data;
@@ -127,7 +126,7 @@ void check_telemetry(void) {
         //find the delimiter string
         if((start_temp==end_temp)&&!equal_PY){//&&!printed){
           //printed = true;
-          printf("Checking delimiter\n")
+          printf("Checking delimiter\n");
           b_temp = false;
           int comp = 0;
           for(int j=0;j<6;j++){
@@ -136,7 +135,7 @@ void check_telemetry(void) {
           }
           if(comp == 0){
             equal_PY = true;
-            printf("Found message\n")
+            printf("Found message\n");
           }
           start_temp = 0; // Try again?
         }
@@ -192,14 +191,42 @@ void check_telemetry(void) {
 
 int main(int argc, char **argv)
 {
-  gps_init_tpv(&tpv);
-  printf("Hello Telemetry!\n");
+  printf("Hello Telemetry!\n
 
-  for (int j=0;j<4;j++)
+  char *START_STR = "$PREDI";
+  char *END_STR = "!";
+  char START_IN[6] = ".FPGA1";
+  char full_message[24];
+  char *xstr = " sample text 1.";
+
+  snprintf(full_message, 24, "%s%s%s",START_STR,xstr,END_STR);
+
+  int Set_to_57kbps[28] = {0xB5, 0x62, 0x06, 0x00, 0x14, 0x00, 0x01, 0x00, 0x00, 0x00, 0xD0, 0x08, 0x00, 0x00,
+                               0x00, 0xE1, 0x00, 0x00, 0x07, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE2, 0xE1
+                              };
+// Write
+/*
+  for (int j=0;j<20;j++)
   // while(1)
   {
-    check_telemetry();
+  //  check_telemetry();
+    for(int i=0;i<24;i++)
+    {
+      //int temp = fill_message[i]-48;
+      uart2_write(Set_to_57kbps[i]);
+      millis(100);
+    }
+    millis(100);
+    printf("Writing stuff nr.%d: %s\n",j,full_message);
   }
-
+*/
+for (int j=0;j<100000;j++){
+  millis(4);                                                              //Wait for 4000us to simulate a 250Hz loop.
+  printf("message nr.%d\n",j);
+    while (uart2_read(&uart_data)){
+      printf("%c",uart_data);
+    }
+    millis(10);
+}
   return 0;
 }
