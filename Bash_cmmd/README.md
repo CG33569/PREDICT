@@ -216,10 +216,10 @@ On the picture: top cable -> USB cable to download patmos, bottom cable -> UART-
 ```
 Pin+Number | Wire colour | Adapter
 ------------------------------------
-    rxd 1  |    white    | rxd
-    txd 2  |    grey     | txd
-   3.3V 29 |    purple   | VBUS
-    GND 30 |    blue     | GND
+    rxd 2  |    white    | rxd
+    txd 1  |    grey     | txd
+   3.3V 33 |    purple   | VBUS
+    GND 34 |    blue     | GND
 ```
 ![](info/de10_uart.jpg)
 
