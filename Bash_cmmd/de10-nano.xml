@@ -21,7 +21,7 @@
   <Devs>
     <Dev DevType="Uart" entity="Uart" iface="OcpCore">
       <params>
-        <param name="baudRate" value="9600"/>
+        <param name="baudRate" value="115200"/>
         <param name="fifoDepth" value="16"/>
       </params>
     </Dev>

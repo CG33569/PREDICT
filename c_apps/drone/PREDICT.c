@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <machine/rtc.h>
@@ -10,23 +9,18 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
-//new
 
-#define UART2 ((volatile _IODEV unsigned *)PATMOS_IO_UART2)
-
-const unsigned int CPU_PERIOD = 20; //CPU period in ns.
-
-unsigned char uart_data=0;
-
-// This shitty fcn is from Arduino
-void millis(int milliseconds)
+#include "PREDICT.h"
+// ================================ Variables ===============================
+const unsigned int CPU_PERIOD = 20;
+// ================================ Functions  ===============================
+//-----> Basic usage:
+void micros(int milliseconds)
 {
   unsigned int timer_ms = (get_cpu_usecs()/1000);
   unsigned int loop_timer = timer_ms;
   while(timer_ms - loop_timer < milliseconds)timer_ms = get_cpu_usecs()/1000;
 }
-
-
 //Writes a byte to the uart2 (to be sent)
 //Returns 0 is a character was sent, -1 otherwise.
 int uart2_write(unsigned char data)
@@ -42,7 +36,6 @@ int uart2_write(unsigned char data)
     return 0;
   }
 }
-
 //Reads a byte from uart2 (from received data) and places it int the variable
 //specified by the pointer * data.
 //Returns 0 is a character was read, -1 otherwise.
@@ -59,10 +52,47 @@ int uart2_read(unsigned char *data)
     return 0;
   }
 }
+//Writes to actuator specified by actuator ID (0 to 4)
+// The data is the PWM signal width in us (from 1000 to 2000 = 1 to 2 ms)
+void actuator_write(unsigned int actuator_id, unsigned int data)
+{
+  *(MOTOR + actuator_id) = data;
+}
+//get pulse width data from receiver
+int receiver_read(unsigned int receiver_id){
 
+  unsigned int clock_cycles_counted = *(RECEIVER + receiver_id);
+  unsigned int pulse_high_time = (clock_cycles_counted * CPU_PERIOD) / 1000;
 
-
-void send_telemtry(char *xstr){
+  return pulse_high_time;
+}
+//Writes to i2c, returns -1 if there was an error, 0 if succeded
+int i2c_write(unsigned char chipaddress, unsigned char regaddress, unsigned char data)
+{
+  I2C = ((((unsigned int) data & 0x000000FF) << 16) | (((unsigned int) regaddress & 0x000000FF) << 8) | (((unsigned int) chipaddress & 0x0000007F) << 1)) & 0xFFFFFFFE;
+  if ((I2C & 0x00000100) != 0)
+  {
+    return -1;
+  }else{
+    return 0;
+  }
+}
+//Reads to i2c, returns the read value (8 bits), if there was an error the returned value is -1 (0xFFFFFFFF)
+int i2c_read(unsigned char chipaddress, unsigned char regaddress)
+{
+  I2C = ((((unsigned int) regaddress & 0x000000FF) << 8) | (((unsigned int) chipaddress & 0x0000007F) << 1)) | 0x00000001;
+  unsigned int I2C_tmp = I2C;
+  if ((I2C_tmp & 0x00000100) != 0)
+  {
+    return -1;
+  }else{
+    return (int)((unsigned int)(I2C_tmp) & 0x000000FF);
+  }
+}
+//-----> Components handling:
+// telemetry modules
+void send_telemtry(char *xstr)
+{
   char *START_STR = ".FPGA1";
   char *END_STR = "!";
   char full_message[100];
@@ -71,13 +101,13 @@ void send_telemtry(char *xstr){
   for(int i=0;i<30;i++)
   {
     uart2_write(full_message[i]);
-    millis(1);
+    micros(1);
   }
 }
 
-void receive_telemtry(char *Outstr){
-  char START_IN[6] = "$PC";
-  char temp[6]="";
+void receive_telemtry(char *Outstr)
+{
+  unsigned char uart_data=0;
   char full_message[124]="";
   memset(full_message, '\0', 512);
   bool busy = true, start_temp = false, start = false;
@@ -104,25 +134,9 @@ void receive_telemtry(char *Outstr){
         start = true;
         cnt = 0;
       }
-      millis(3);
+      micros(3);
       k++;
     }
     strcpy(Outstr, full_message);
 }
-
-int main(int argc, char **argv)
-{
-  printf("Hello Telemetry!\n");
-  char *xstr = "sample text 1";
-  char recUART[512]="";
-  for (int j=0;j<20;j++)
-  {
-    printf("\nWriting stuff nr.%d: %s\n",j,xstr);
-    send_telemtry(xstr);
-    millis(100);
-    receive_telemtry(recUART);
-    printf("received: %s\n",recUART);
-  }
-
-  return 0;
-}
+// GPS

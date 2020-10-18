@@ -1,4 +1,4 @@
-#define TERMINAL    "/dev/ttyUSB1"
+#define TERMINAL    "/dev/ttyUSB0"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -80,7 +80,6 @@ int main()
     printf("Port opened sucessfully\n");
     /*baudrate 115200, 8 bits, no parity, 1 stop bit */
     //set_interface_attribs(fd, B115200);
-    set_interface_attribs(fd, B9600);
     //set_mincount(fd, 0);                /* set to pure timed read */
     printf("Set interface\n");
     /* simple output */
@@ -92,39 +91,37 @@ int main()
 
 
 // Reading variables
-unsigned char buf[512];
+unsigned char buf[80];
 int n = 0;
 int num_bytes;
 
-char *START_STR = "$PREDI";
+char *START_STR = ".FPGA1";
 char *END_STR = "!";
-char START_IN[6] = ".FPGA1";
+char START_IN[6] = "$PREDI";
 char full_message[512];
 
 /* Main questions to adapt this to Patmos:
  * How to modify read and write, so it does it from the main uart
  * What the hell, honestly
 */
-xstr = "text";
   while(1){
-  //    snprintf(full_message, 512, "%s%s%s",START_STR,xstr,END_STR);
-    //  write(fd, full_message, strlen(full_message));
-  //    printf("Writing stuff nr.%d\n",n); // %s\n",n,full_message);
-  //    tcdrain(fd);
-  //    sleep(0.1);
+      //printf("Writing stuff nr.%d \n",n);
+      char *xstr = " sample text 1.";
+      snprintf(full_message, 512, "%s%s%s",START_STR,xstr,END_STR);
 
-  //    memset(buf, 0, sizeof buf);
+      for(int j=0;j<512;j++){
+        write(fd, full_message[j], strlen(full_message));
+        tcdrain(fd);
+        sleep(0.1);
+      }
+
+      memset(buf, 0, sizeof buf);
       num_bytes = read(fd, buf, sizeof(buf));
       if(num_bytes>0){
         //For some reason, to be sync, it requires to be at least 5 messages read-written
         n = n+1;
         if(n>5){
-          printf("Received:");
-          for (int j=0;j<32;j++){
-            printf("%c",buf[j]);
-          }
-          printf("\n");
-          memset(buf, 0, sizeof buf);
+          printf("Received: %s\n",buf);
           //Keep analysing and decoding message from here
         }
       }
@@ -137,7 +134,7 @@ xstr = "text";
         printf("Timeout\n");
       }
       */
-      //sleep(1);
+      sleep(0.5);
   }
 
   close(fd);

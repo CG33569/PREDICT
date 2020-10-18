@@ -106,7 +106,7 @@ extern "C" {
  * @pre The pointer @p tpv must not be NULL.
  * @post The data in @p tpv is modified.
  */
-//void gps_init_tpv(struct gps_tpv *tpv);
+void gps_init_tpv(struct gps_tpv *tpv);
 
 /**
  * @brief Encodes a NMEA sentence.
@@ -127,7 +127,7 @@ extern "C" {
  * @pre The pointer @p message must not be NULL.
  * @post The data in @p destination is modified.
  */
-//char *gps_encode(char *destination, const char *message);
+char *gps_encode(char *destination, const char *message);
 
 /**
  * @brief Decodes a NMEA sentence.
@@ -150,7 +150,7 @@ extern "C" {
  * @post The data in @p tpv is modified.
  * @post The data in @p nmea is modified.
  */
-//int gps_decode(struct gps_tpv *tpv, char *nmea);
+int gps_decode(struct gps_tpv *tpv, char *nmea);
 
 /**
  * @brief Produces an error string.
@@ -160,7 +160,7 @@ extern "C" {
  * @param[in] e The error code.
  * @return A string which tells in detail what the code represents.
  */
-//const char *gps_error_string(const int e);
+const char *gps_error_string(const int e);
 
 #ifdef __cplusplus
 }

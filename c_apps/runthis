@@ -2,7 +2,9 @@
 #export APP=de10-IMU
 #export MAIN=barometer_test
 #export MAIN=MS5611-try
-export APP=serial
+export APP=libgps
+#export APP=serial
+#export APP=drone
 export MAIN=main
 
 export REPOS=~/repos/PREDICT/c_apps
@@ -27,4 +29,5 @@ cd $ADDRESS
 export BOARD=de10-nano
 make app APP=$APP comp
 echo "${green}======== Download code on board ========${reset}"
-make app APP=$APP download || make app APP=$APP download COM_PORT=/dev/ttyUSB1 || make app APP=$APP download COM_PORT=/dev/ttyUSB2 || make app APP=$APP download COM_PORT=/dev/ttyUSB3 || make app APP=$APP download COM_PORT=/dev/ttyUSB4 || make app APP=$APP download COM_PORT=/dev/ttyUSB5 || make app APP=$APP download COM_PORT=/dev/ttyUSB6 || make app APP=$APP download COM_PORT=/dev/ttyUSB7 || make app APP=$APP download COM_PORT=/dev/ttyUSB8
+#make app APP=$APP download || make app APP=$APP download COM_PORT=/dev/ttyUSB1 || make app APP=$APP download COM_PORT=/dev/ttyUSB2 || make app APP=$APP download COM_PORT=/dev/ttyUSB3 || make app APP=$APP download COM_PORT=/dev/ttyUSB4 || make app APP=$APP download COM_PORT=/dev/ttyUSB5 || make app APP=$APP download COM_PORT=/dev/ttyUSB6 || make app APP=$APP download COM_PORT=/dev/ttyUSB7 || make app APP=$APP download COM_PORT=/dev/ttyUSB8
+make app APP=$APP download

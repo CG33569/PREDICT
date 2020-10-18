@@ -1,5 +1,6 @@
 MAIN?=main
 APP?=serial
+ADD?=gps.c PREDICT.c
 
 LDFLAGS?= \
         -mpatmos-method-cache-size=0x1000 \
@@ -7,5 +8,5 @@ LDFLAGS?= \
         -Xgold --defsym -Xgold __heap_end=0x070000
 
 all:
-	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o $(APP).elf -lm
-	patmos-clang -I ../.. -O2 $(LDFLAGS) $(MAIN).c -o ~/t-crest/patmos/tmp/$(APP).elf
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(ADD) $(MAIN).c -o $(APP).elf -lm
+	patmos-clang -I ../.. -O2 $(LDFLAGS) $(ADD) $(MAIN).c -o ~/t-crest/patmos/tmp/$(APP).elf -lm
