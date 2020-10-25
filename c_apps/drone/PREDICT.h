@@ -47,7 +47,8 @@
 #define MPU6050_CONFIG_REG         0x1A   // R
 // ============================= Functions hearders ============================
 //-----> Basic usage:
-void micros(int milliseconds);
+void micros(int microseconds);
+void millis(int milliseconds);
 int uart2_write(unsigned char data);
 int uart2_read(unsigned char *data);
 void actuator_write(unsigned int actuator_id, unsigned int data);
@@ -57,6 +58,8 @@ int i2c_read(unsigned char chipaddress, unsigned char regaddress);
 //-----> Components handling:
 void send_telemtry(char *xstr);
 void receive_telemtry(char *Outstr);
-// void print_tpv_value(const char *name, const char *format, const int32_t value, const int32_t scale_factor);
-// void print_gps(char*str,gps_tpv& tpv);
-// void check_gps(gps_tpv& tpv);
+/*
+void print_tpv_value(const char *name, const char *format, const int32_t value, const int32_t scale_factor);
+void print_gps(char*str,struct gps_tpv* tpv);
+void check_gps(struct gps_tpv* tpv);
+*/
