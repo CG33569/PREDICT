@@ -85,13 +85,15 @@ int i2c_write(unsigned int data){
 	while (i2c_busy());
 
 	// Send the write request
+	printf("LOG: BEFORE WRITING: Trying to read the i2caddr gives : 0x%0X \n", *i2caddr);
 	printf("LOG: Sending Write request!\n");
-	printf("LOG: Trying to read the i2caddr gives : 0x%0X \n", *i2caddr);
-	*i2caddr = MS5611_WRITE;
-	printf("LOG: Trying to read the i2caddr gives : 0x%0X \n", *i2caddr);
+	*i2caddr = MS5611_ADDRESS;
+	printf("LOG: AFTER WRITING: Trying to read the i2caddr gives : 0x%0X \n", *i2caddr);
 	// Wait for ACK
 	while (i2c_busy());
+	// If no ACK was received exit program?
 	if (i2c_gotNACK()) return 0;
+	// Print the satus
 	i2c_printStatus();
 
 	// Send command byte
@@ -102,6 +104,7 @@ int i2c_write(unsigned int data){
 
 	// Wait for ACK
 	while (i2c_busy());
+	// If no ACK was received exit program?
 	if (i2c_gotNACK()) return 0;
 
 	// Send stop condition
