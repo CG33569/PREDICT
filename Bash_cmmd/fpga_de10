@@ -1,6 +1,5 @@
 # Edit the repository address:
 export REPOS=~/t-crest
-export PRED=~/repos/PREDICT
 
 # Let everything else run:
 white=`tput setab 7`
@@ -8,13 +7,7 @@ green=`tput setaf 2`
 reset=`tput sgr0`
 cd $REPOS/patmos
 echo "${green}${white}======== Updating hardware description ========${reset}"
-export BOARD=de10-nano
-
-# Uncomment the following lines if this is the first time running this:
-rm -rf $REPOS/patmos/hardware/build
-rm -rf $REPOS/patmos/hardware/config/de10-nano.xml
-cp $PRED/Bash_cmmd/de10-nano.xml $REPOS/patmos/hardware/config
-#------------
+export BOARD=de10-nano-drone
 
 make gen
 make -C hardware verilog BOOTAPP=bootable-bootloader BOARD=de10-nano
