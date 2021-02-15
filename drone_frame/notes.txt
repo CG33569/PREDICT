@@ -1,0 +1,2 @@
+Move the drone model inside Coppelia libraries:
+C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile

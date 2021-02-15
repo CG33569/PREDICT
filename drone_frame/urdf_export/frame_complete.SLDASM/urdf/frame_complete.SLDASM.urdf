@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="frame_complete.SLDASM">
+  <link
+    name="PREDICT">
+    <inertial>
+      <origin
+        xyz="6.5679E-06 0.00020921 -0.047217"
+        rpy="0 0 0" />
+      <mass
+        value="0.7905" />
+      <inertia
+        ixx="0.0014685"
+        ixy="3.613E-06"
+        ixz="8.7274E-06"
+        iyy="0.0017377"
+        iyz="-1.2218E-06"
+        izz="0.00159" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/PREDICT.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.06 0.06 0.06 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/PREDICT.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="motor1">
+    <inertial>
+      <origin
+        xyz="1.3707E-06 -7.1649E-08 0.029837"
+        rpy="0 0 0" />
+      <mass
+        value="0.070504" />
+      <inertia
+        ixx="2.3142E-06"
+        ixy="1.1514E-06"
+        ixz="5.2863E-11"
+        iyy="0.0002612"
+        iyz="-2.6753E-12"
+        izz="0.00026285" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.043137 0.043137 0.043137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="m1"
+    type="continuous">
+    <origin
+      xyz="0.15909 0.15911 -0.0015"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="motor1" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+  <link
+    name="motor2">
+    <inertial>
+      <origin
+        xyz="2.4517E-08 5.6403E-09 0.029837"
+        rpy="0 0 0" />
+      <mass
+        value="0.0090069" />
+      <inertia
+        ixx="3.4291E-07"
+        ixy="1.2595E-06"
+        ixz="-3.0371E-13"
+        iyy="3.3346E-05"
+        iyz="-2.575E-14"
+        izz="3.3604E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9764 0.1686 0.2235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="m2"
+    type="continuous">
+    <origin
+      xyz="-0.15911 0.15909 -0.0015"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="motor2" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+  <link
+    name="motor3">
+    <inertial>
+      <origin
+        xyz="1.3663E-06 -7.0998E-08 0.029837"
+        rpy="0 0 0" />
+      <mass
+        value="0.070504" />
+      <inertia
+        ixx="2.3142E-06"
+        ixy="1.1514E-06"
+        ixz="5.3106E-11"
+        iyy="0.0002612"
+        iyz="-2.7079E-12"
+        izz="0.00026285" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.043137 0.043137 0.043137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="m3"
+    type="continuous">
+    <origin
+      xyz="-0.15909 -0.15911 -0.0015"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="motor3" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+  <link
+    name="motor4">
+    <inertial>
+      <origin
+        xyz="-7.2389E-08 -3.6433E-09 0.029837"
+        rpy="0 0 0" />
+      <mass
+        value="0.009007" />
+      <inertia
+        ixx="3.2164E-07"
+        ixy="9.4005E-07"
+        ixz="-6.6576E-12"
+        iyy="3.3367E-05"
+        iyz="8.6474E-13"
+        izz="3.3604E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9764 0.1686 0.2235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motor4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="m4"
+    type="continuous">
+    <origin
+      xyz="0.15911 -0.15909 -0.0015"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="motor4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+  <link
+    name="front">
+    <inertial>
+      <origin
+        xyz="0.090922 6.9394E-06 -0.011302"
+        rpy="0 0 0" />
+      <mass
+        value="0.58205" />
+      <inertia
+        ixx="0.0014305"
+        ixy="-8.9989E-17"
+        ixz="9.6807E-06"
+        iyy="0.0014305"
+        iyz="7.4043E-10"
+        izz="0.0027222" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/front.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.90196 0.20784 0.3098 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/front.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_fixed"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="front" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back">
+    <inertial>
+      <origin
+        xyz="-0.090922 -6.9394E-06 -0.011302"
+        rpy="0 0 0" />
+      <mass
+        value="0.58205" />
+      <inertia
+        ixx="0.0014305"
+        ixy="1.3321E-15"
+        ixz="-9.6807E-06"
+        iyy="0.0014305"
+        iyz="-7.4043E-10"
+        izz="0.0027222" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/back.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/back.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_fixed"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="back" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="motors">
+    <inertial>
+      <origin
+        xyz="2.31E-07 -4.4315E-07 0.011837"
+        rpy="0 0 0" />
+      <mass
+        value="0.20746" />
+      <inertia
+        ixx="1.5378E-05"
+        ixy="1.3585E-08"
+        ixz="-7.4075E-10"
+        iyy="1.5383E-05"
+        iyz="1.0163E-09"
+        izz="2.4864E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motors.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/motors.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="m_fixed"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="motors" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+  <link
+    name="tops">
+    <inertial>
+      <origin
+        xyz="1.3427E-05 2.5905E-06 0.036158"
+        rpy="0 0 0" />
+      <mass
+        value="0.016979" />
+      <inertia
+        ixx="3.3033E-07"
+        ixy="4.489E-11"
+        ixz="-6.7251E-12"
+        iyy="3.3051E-07"
+        iyz="-4.8834E-10"
+        izz="3.2334E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/tops.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.4902 0.4902 0.4902 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://frame_complete.SLDASM/meshes/tops.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="tops_fixed"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="PREDICT" />
+    <child
+      link="tops" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

@@ -1,4 +1,4 @@
-#include <TinyGPS++.h>
+#include "TinyGPS++.h"
 #include <SoftwareSerial.h>
 /*
    This sample sketch demonstrates the normal use of a TinyGPS++ (TinyGPSPlus) object.
@@ -58,7 +58,7 @@ void displayInfo(TinyGPSPlus gps)
   if (gps.date.isValid())
   {
     Serial.print(gps.date.month());
-    Serial.print(F("/"));
+    Serial.print(F("/"));//PIN_AB23
     Serial.print(gps.date.day());
     Serial.print(F("/"));
     Serial.print(gps.date.year());
