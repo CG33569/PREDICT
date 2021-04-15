@@ -1,0 +1,157 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "oLedsPins_led[0]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[1]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[2]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[3]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[4]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[5]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[6]",
+					"strict" : false
+				},
+				{
+					"name" : "oLedsPins_led[7]",
+					"strict" : false
+				},
+				{
+					"name" : "uart_1_txd",
+					"strict" : false
+				},
+				{
+					"name" : "uart_2_txd",
+					"strict" : false
+				},
+				{
+					"name" : "uart_3_txd",
+					"strict" : false
+				},
+				{
+					"name" : "oMpuScl",
+					"strict" : false
+				},
+				{
+					"name" : "SPIMaster_mosi",
+					"strict" : false
+				},
+				{
+					"name" : "SPIMaster_nSS",
+					"strict" : false
+				},
+				{
+					"name" : "SPIMaster_sclk",
+					"strict" : false
+				},
+				{
+					"name" : "test_SPIMaster_miso",
+					"strict" : false
+				},
+				{
+					"name" : "test_SPIMaster_mosi",
+					"strict" : false
+				},
+				{
+					"name" : "test_SPIMaster_nSS",
+					"strict" : false
+				},
+				{
+					"name" : "test_SPIMaster_sclk",
+					"strict" : false
+				},
+				{
+					"name" : "propdrive_out_port[0]",
+					"strict" : false
+				},
+				{
+					"name" : "propdrive_out_port[1]",
+					"strict" : false
+				},
+				{
+					"name" : "propdrive_out_port[2]",
+					"strict" : false
+				},
+				{
+					"name" : "propdrive_out_port[3]",
+					"strict" : false
+				},
+				{
+					"name" : "ioMpuSda",
+					"strict" : false
+				},
+				{
+					"name" : "i2c_sda",
+					"strict" : false
+				},
+				{
+					"name" : "i2c_scl",
+					"strict" : false
+				},
+				{
+					"name" : "SPIMaster_miso",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "uart_1_rxd",
+					"strict" : false
+				},
+				{
+					"name" : "uart_3_rxd",
+					"strict" : false
+				},
+				{
+					"name" : "uart_2_rxd",
+					"strict" : false
+				},
+				{
+					"name" : "pwm_measurment_input[2]",
+					"strict" : false
+				},
+				{
+					"name" : "pwm_measurment_input[0]",
+					"strict" : false
+				},
+				{
+					"name" : "pwm_measurment_input[1]",
+					"strict" : false
+				},
+				{
+					"name" : "pwm_measurment_input[5]",
+					"strict" : false
+				},
+				{
+					"name" : "pwm_measurment_input[4]",
+					"strict" : false
+				},
+				{
+					"name" : "pwm_measurment_input[3]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

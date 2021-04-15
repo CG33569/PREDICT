@@ -1,0 +1,47 @@
+%\vfill % <- use this to avoid big blank spaces
+%\clearpage
+%\newpage
+% Start on a new page
+\section{Drone simulation}\label{sec:simulation}
+
+Another concept for the project was to develop a simulation model of the drone that can be used for testing the flight controller while running on the FPGA. The main idea for this approach is shown in Figure \ref{fig:sim_concept} and it can be described as follows:
+
+\begin{itemize}
+    \item The goal is to simulate and find bugs on the flight controller, so the simulation aims to test the drone on the fly and how it reacts to changes on the commands from the pilot through the transmitter. Thus the actual FPGA, receiver and transmitter are needed, as shown in Figure \ref{fig:sim_setup}.
+    
+    \item The Patmos architecture and a modified version of the flight controller are downloaded on the board.
+    
+    \item The modified version of the flight controller uses the telemetry port to exchange messages with the simulator. It gets all the sensors values required (IMU, barometer, GPS,...) from the messages instead of using their normal ports (I2C, UART1).
+    
+    \item On the PC Station, it is needed a program that works as an interface between the FPGA and the simulator, which was implemented as a Python script. This interface access the port where the UART2 is sending/receiving messages and the simulation drone. In the run, it gets the sensors values, converts them to the same format as the real ones and sends them to the FPGA. On the other hand, it gets the motor commands from the FPGA and converts them into the units that the simulation drone works with (in this case $rad/s$) and sends it to the simulation.
+    
+\end{itemize}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/simulation/simulation_concept.png}
+    \caption{Simulation diagram}
+    \label{fig:sim_concept}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[scale=0.3]{Figures/simulation/simulation_setup.jpg}
+    \caption{Simulation set up: transmitter (top left), FPGA with a receiver, two UART-USB adapters (connected to UART Cmp and UART2), and a laptop (right).}
+    \label{fig:sim_setup}
+\end{figure}
+
+The drone model presented in \ref{sec:hw_mec} can be exported from SolidWorks into Universal Robot Description Format (URDF) \cite{bib:urdfPlugin}. Thus, the simulator chosen is CoppeliaSim, which is compatible with this format.
+
+Both Model-A and Model-B were successfully imported into CoppeliaSim and added to the simulator library as robot models, as shown in Figure \ref{fig:sim_models}. On top of that, the models from Solidworks do not include the sensors and these had to be added manually on the simulated models. A successful test showed that the communication between the different elements was possible and the program interface could exchange messages with the FPGA and get values from the sensors on the simulation.s
+
+However, the CoppeliaSim simulator does not have fluid mechanics on the physics engine, so the simulation environment is on a vacuum space. In order to make a mobile robot move within a 3D space, it is necessary to implement on the simulation scrips the differential equations and forces that must be applied on the body. 
+
+There are another mobile robot models within the models library that have managed to successfully implement this (another quad-copter drone and a swimming snake robot), but this was not achieved for this project. Both drone models were set as dynamic and responsive objects and they can spin their motors, but they cannot take off properly. Finally, this part of the project remains unfinished due to the fact that the real lab and components were accessible.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/simulation/coppelia_model.png}
+    \caption{From left to right: drone model imported and saved in Coppelia library, a drone frame in simulation (example with a Model-B), showing the inside of the cover where the sensors had to be added to the simulation model (example with a Model-A).}
+    \label{fig:sim_models}
+\end{figure}

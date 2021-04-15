@@ -1,0 +1,184 @@
+------------------------------------------------------------
+Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1100mV 100C Model Setup 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 1.574
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Setup 'altera_reserved_tck'
+Slack : 11.702
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Hold 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.164
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Hold 'altera_reserved_tck'
+Slack : 0.791
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Recovery 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 3.040
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Recovery 'altera_reserved_tck'
+Slack : 29.936
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Removal 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.562
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Removal 'altera_reserved_tck'
+Slack : 1.057
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|pll_write_clk_dq_write_clk'
+Slack : 0.523
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.540
+TNS   : 0.000
+
+Type  : Slow 1100mV 100C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.550
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Setup 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 1.573
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Setup 'altera_reserved_tck'
+Slack : 11.867
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Hold 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.216
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Hold 'altera_reserved_tck'
+Slack : 0.759
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Recovery 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 3.130
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Recovery 'altera_reserved_tck'
+Slack : 30.062
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Removal 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.590
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Removal 'altera_reserved_tck'
+Slack : 0.963
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|pll_write_clk_dq_write_clk'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.546
+TNS   : 0.000
+
+Type  : Slow 1100mV -40C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.542
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Setup 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 2.113
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Setup 'altera_reserved_tck'
+Slack : 14.259
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Hold 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.083
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Hold 'altera_reserved_tck'
+Slack : 0.294
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Recovery 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 3.731
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Recovery 'altera_reserved_tck'
+Slack : 31.444
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Removal 'altera_reserved_tck'
+Slack : 0.423
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Removal 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.497
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|pll_write_clk_dq_write_clk'
+Slack : 0.883
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.891
+TNS   : 0.000
+
+Type  : Fast 1100mV 100C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.485
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Setup 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 2.113
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Setup 'altera_reserved_tck'
+Slack : 14.778
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Hold 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.076
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Hold 'altera_reserved_tck'
+Slack : 0.249
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Recovery 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 3.843
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Recovery 'altera_reserved_tck'
+Slack : 31.667
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Removal 'altera_reserved_tck'
+Slack : 0.329
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Removal 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.463
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|pll_write_clk_dq_write_clk'
+Slack : 0.887
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Minimum Pulse Width 'Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_hps:hps|soc_system_ddr3_hps_hps_io:hps_io|soc_system_ddr3_hps_hps_io_border:border|hps_sdram:hps_sdram_inst|hps_sdram_pll:pll|afi_clk_write_clk'
+Slack : 0.895
+TNS   : 0.000
+
+Type  : Fast 1100mV -40C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.456
+TNS   : 0.000
+
+------------------------------------------------------------
+Info: see the "DDR report" for DDR timing results
+------------------------------------------------------------
+------------------------------------------------------------

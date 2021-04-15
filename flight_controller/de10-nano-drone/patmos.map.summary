@@ -1,0 +1,17 @@
+Analysis & Synthesis Status : Successful - Fri Mar 12 00:20:34 2021
+Quartus Prime Version : 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+Revision Name : patmos
+Top-level Entity Name : patmos_top
+Family : Cyclone V
+Logic utilization (in ALMs) : N/A
+Total registers : 17638
+Total pins : 111
+Total virtual pins : 0
+Total block memory bits : 596,368
+Total DSP Blocks : 24
+Total HSSI RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total PLLs : 0
+Total DLLs : 1

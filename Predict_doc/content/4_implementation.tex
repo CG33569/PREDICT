@@ -1,0 +1,72 @@
+\chapter{Implementation}\label{ch:impl}
+
+\section{Built drones}
+
+In total, four full-assembled drones were built for this project using the hardware described in Chapter \ref{ch:hw}: two model-A units and two model-B, both models shown in Figures \ref{fig:imp_models_noCover} and \ref{fig:imp_modelsFULL}. The four drones are shown in Figure \ref{fig:imp_4drones}, and they are separated in two groups: the drones that belong to AAU (one model-A and one model-B) and the ones that belong to DTU (also one model-A and one model-B). Each group of drones has a single transmitter, that can be paired with any receiver of the drones.
+
+Additionally, there are two not-assembled spare sets and each set has a FPGA, a PCB, a cover, a FPGA-frame attachment, a frame and the sensors that are attached on top of the PCB.
+
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/implementation/modelA_and_B.png}
+    \caption{Model-A without cover (left) and Model-B (right). Both units have inside a FPGA with a PCB attached as shown.}
+    \label{fig:imp_models_noCover}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/implementation/modelA_and_B_assembled.png}
+    \caption{Fully assembled Model-B (left) and A (right) units.}
+    \label{fig:imp_modelsFULL}
+\end{figure}
+
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/implementation/four_drones_tel.jpg}
+    \caption{From left to right: AAU transmitter, drone 1 (Model-A, group AAU), drone 2 (Model-A, group DTU), drone 3 (Model-B, group AAU), drone 4 (Model-B, group DTU), DTU transmitter. Next to each drone, there is its paired telemetry module for a remote station.}
+    \label{fig:imp_4drones}
+\end{figure}
+
+
+\section{Patmos configuration}
+
+The Patmos architecture for this project is called de10-nano-drone and its configuration is quite different from the standard de10-nano or the default configurations. Here are some its hardware specifications:
+
+\begin{itemize}
+    \item ADC Module: This resource is available inside the FPGA and hard-wired to it. This module has its own set of pins for the analog inputs and its separate power supply.
+    \item I2C Master for multiple sensors: the SDA and SCL pins work as a bus to connect three different sensors (IMU, barometer, compass).
+    \item Second and third UART ports: the second UART has the same baud rate as the GPS and the third UART has the same baud rate as the telemetry module and a bigger FIFO depth for longer messages exchange.
+    \item Modification on Actuators: it works as an input and it has 6 pins, so it is used for the 6-channels receiver.
+    \item External memory of 1GB: it uses the micro SD card from the FPGA. This is required for the multi-core feature.
+    \item Multi-core assignment: there are 4 cores in use and the devices must be assigned to a core (by default they are assigned to core nr.0). The devices have been assigned as it follows:
+    \begin{itemize}
+        \item Core 0: ADC module and LEDs.
+        \item Core 1: I2C master.
+        \item Core 2: Actuators (receiver), and this also includes Propulsion (motors).
+        \item Core 3: UART 2 and 3.
+    \end{itemize}
+\end{itemize}
+
+
+\section{Software architecture}
+
+The flight controller algorithm and functionalities described on the previous Chapter \ref{ch:sw} have been implemented as an application written in C. This implementation is divided in different groups of scripts and header files. As shown in Figure \ref{fig:imp_arch}, there are six groups:
+
+\begin{itemize}
+    \item Basic functionalities: it contains all the low-level and hardware-related dependencies.
+    \item Components: using the basic functionalities, it implements the full functionalities of the devices and they are meant for the specific components from the Tables \ref{tab:comp_common} and \ref{tab:comp_AB}.
+    \item Flying functionalities and flight controller: they contain the different modes and the flight algorithm described on Section \ref{sec:general_working}.
+    \item Test programs: it implements different test scripts for checking the functionality of every device. Every program is described in Chapter \ref{ch:test}.
+    \item Simulation: it contains the simulation scripts, dependencies and simulation scenes, which are described in Section \ref{sec:simulation}
+\end{itemize}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/implementation/fc_architecture.png}
+    \caption{Software architecture for the flight controller and additional functionalities.}
+    \label{fig:imp_arch}
+\end{figure}
+
+\input{content/4_simulation}

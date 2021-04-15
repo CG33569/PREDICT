@@ -1,0 +1,183 @@
+\documentclass[a4paper, 11pt, twoside]{report}
+% Remember to follow the rules for AAU report format
+% - Spacing must be minimum 1.2
+% - Font size must be minimum 11
+% - Margins must be at least 2 cm., including 3 cm. in the binding margin
+% Others:
+\usepackage{titlesec}
+%%%%%% Headers
+\usepackage{fancyhdr}
+\usepackage[paper=a4paper,layout=a4paper]{geometry}
+\usepackage[pages=some]{background}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes, arrows, fit, automata}
+\usepackage{amsmath}  
+\usepackage{amssymb}  
+\usepackage{calc}  
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{blindtext}
+\usepackage{bm,times}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+\usepackage{hyperref, bookmark, url}
+\usepackage{graphicx}
+\usepackage{float} 
+\usepackage{lastpage} 
+\usepackage{listings}
+\usepackage{xcolor,colortbl}
+\bibliographystyle{ieeetr}
+\usepackage[nottoc]{tocbibind} % to add the bibliography to the table of contents, add the option numbib for adding a chapter number to it
+% To prevent Latex moving the tables around:
+\usepackage{float}
+\restylefloat{table}
+%%%%%%% Commands  
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter}{1em}{}
+
+\setlength{\columnsep}{1cm}
+\setlength{\headheight}{13.6pt}
+
+\definecolor{aaublue}{RGB}{33,26,82}
+\definecolor{link}{RGB}{6, 69, 173}
+\definecolor{maroon}{cmyk}{0, 0.73, 1, 0.30}
+\definecolor{halfgray}{gray}{0.55}
+
+\definecolor{navyblue}{RGB}{22, 22, 110}
+\definecolor{bloo}{RGB}{15, 30, 127}
+\definecolor{Groon}{RGB}{72,188,60}
+\definecolor{pink}{rgb}{0.858, 0.188, 0.478}
+
+\usepackage[font={color=navyblue,small},figurename=Fig.,labelfont={it}]{caption}
+
+\definecolor{aaublue}{RGB}{33,26,82}
+\definecolor{link}{RGB}{6, 69, 173}
+\definecolor{maroon}{cmyk}{0, 0.73, 1, 0.30}
+\definecolor{halfgray}{gray}{0.55}
+
+  
+%%% Style for C code
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C
+}
+%%% Style for Basch commands
+\lstdefinestyle{BStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{brown},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{violet},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=bash
+}
+
+%%% Style other languages
+\lstdefinestyle{OtherSt}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{darkgray},
+    keywordstyle=\color{brown},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{olive},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+}
+% Basic colors avaliable in the xcolor package: black, blue, brown, cyan, darkgray, gray, green, lightgray, lime, magenta, olive, orange, pink, purple, red, teal, violet, white, yellow.
+
+\begin{document}
+
+% ================================ Front pages ===========================
+\pagenumbering{roman}
+\include{frontmatter/frontpage}
+\include{frontmatter/colophon}
+
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter}{1em}{}
+
+\newpage
+%The formatting for the title 'paragraph'
+
+\input{frontmatter/preface}
+\input{frontmatter/glossary}
+
+% ================================ Tables and listing ===========================
+\tableofcontents
+\listoffigures
+\listoftables
+
+% ================================ Document content ===========================
+\newpage
+\pagenumbering{arabic}
+% Redefine the plain page style
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyhead[LE,RO]{\textcolor{halfgray}{Aalborg University}}
+  \fancyhead[RE,LO]{\textcolor{halfgray}{PREDICT Project}}
+  \fancyfoot[CE,CO]{\textcolor{halfgray}{\thepage}} %\leftmark
+  %\fancyfoot[LE,RO]{\textcolor{halfgray}{\chaptername - \thechapter}}
+  \renewcommand{\headrulewidth}{0.1pt}
+  \renewcommand{\footrulewidth}{0.1pt}
+  \renewcommand{\headrule}{\hbox to\headwidth{\color{halfgray}\leaders\hrule height \headrulewidth\hfill}}
+  \renewcommand{\footrule}{\hbox to\headwidth{\color{halfgray}\leaders\hrule height \headrulewidth\hfill}}
+}
+\pagestyle{plain}
+
+
+
+\input{content/1_introduction}
+\input{content/2_hardware}
+\input{content/3_software}
+\input{content/4_implementation}
+% where to put this
+%\input{content/4_simulation}
+
+\input{content/5_test_results}
+\input{content/6_conclusion}
+
+\vfill % <- use this to avoid big blank spaces
+% ================================ Others ===========================
+
+
+\bibliography{bibliography.bib}
+
+\input{content/append_build}
+\input{content/append_how}
+
+\end{document}

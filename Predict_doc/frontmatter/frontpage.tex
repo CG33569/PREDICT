@@ -1,0 +1,70 @@
+\backgroundsetup{
+scale=1.1,
+angle=0,
+opacity=1.0,  %% adjust
+contents={\includegraphics[width=\paperwidth,height=\paperheight]{Figures/frontpage/aau_waves}}
+}
+% The geometry for this page is different and it is only applied in this section:
+\begin{titlepage}
+
+\newgeometry{top=0cm,bottom=1.2cm,right=0cm,left=0cm}
+\BgThispage
+
+%Top image
+% For the ubuntu logo:
+%  \centerline{\includegraphics[totalheight=0.568\paperwidth,width=1\paperwidth]{Figures/frontpage/frontpageimage1.jpg}}%
+  \begin{center} 
+  \centerline{\includegraphics[totalheight=0.5822\paperwidth,width=1\paperwidth]{Figures/frontpage/render_frontpage.jpg}}% 
+  \end{center}
+
+%Title stuff	
+	\vspace*{-0.96cm}
+  {\noindent\color{aaublue}\fboxsep0pt\colorbox{white}{\begin{tabular}{@{}p{\paperwidth}@{}}
+    \centerline{
+    \begin{minipage}{0.85\textwidth}
+        \bigskip
+				\bigskip
+        \centering
+        \Huge{\textbf{PREDICT Project documentation}}
+    \end{minipage}}
+		
+	\centerline{
+	\begin{minipage}{0.9\textwidth}
+        \bigskip
+        \centering
+        \Large{Working of a flight controller in a multi-core PATMOS architecture}
+    \end{minipage}}
+			
+	\centerline{
+	\begin{minipage}{0.9\textwidth}
+        \bigskip
+        \centering
+        {\Large Carolina Gomez Salvatierra, Mark Adamik, Rahul Ravichandran}
+    \end{minipage}}
+			
+    \centerline{
+    \begin{minipage}{0.9\textwidth}
+        \bigskip
+        \centering
+        {\large Department of Electronic Systems} 
+    \end{minipage}}
+			
+    \centerline{
+    \begin{minipage}{0.9\textwidth}
+        \bigskip
+        \centering
+        {\Large 15th April, 2021}
+        \smallskip
+    \end{minipage}}
+			
+  \end{tabular}}}
+  \vfill
+  \begin{figure}[!b]
+	\centering
+    \includegraphics[width=0.2\paperwidth]{Figures/frontpage/AAUcircle.png}
+  \end{figure}
+
+\end{titlepage}
+\clearpage
+
+\restoregeometry %Remember to set geometry defaults back after the page

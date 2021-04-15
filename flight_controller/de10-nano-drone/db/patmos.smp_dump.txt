@@ -1,0 +1,290 @@
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|SPIMaster:SPIMaster|state
+Name state.01 
+state.00 0 
+state.01 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|I2CMaster:I2CMaster|busState
+Name busState.11 busState.10 busState.01 busState.00 
+busState.00 0 0 0 0 
+busState.01 0 0 1 1 
+busState.10 0 1 0 1 
+busState.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_3|DataCache:dcache|WriteNoBuffer:wc|state
+Name state.00 state.10 state.01 
+state.00 0 0 0 
+state.01 1 0 1 
+state.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_3|DataCache:dcache|NullCache:bp|stateReg
+Name stateReg.00 stateReg.10 stateReg.01 
+stateReg.00 0 0 0 
+stateReg.01 1 0 1 
+stateReg.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_3|DataCache:dcache|StackCache:sc|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_3|DataCache:dcache|DirectMappedCache:dm|stateReg
+Name stateReg.11 stateReg.10 stateReg.01 stateReg.00 
+stateReg.00 0 0 0 0 
+stateReg.01 0 0 1 1 
+stateReg.10 0 1 0 1 
+stateReg.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_3|MCache:icache|MCacheCtrl:ctrl|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_2|DataCache:dcache|WriteNoBuffer:wc|state
+Name state.00 state.10 state.01 
+state.00 0 0 0 
+state.01 1 0 1 
+state.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_2|DataCache:dcache|NullCache:bp|stateReg
+Name stateReg.00 stateReg.10 stateReg.01 
+stateReg.00 0 0 0 
+stateReg.01 1 0 1 
+stateReg.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_2|DataCache:dcache|StackCache:sc|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_2|DataCache:dcache|DirectMappedCache:dm|stateReg
+Name stateReg.11 stateReg.10 stateReg.01 stateReg.00 
+stateReg.00 0 0 0 0 
+stateReg.01 0 0 1 1 
+stateReg.10 0 1 0 1 
+stateReg.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_2|MCache:icache|MCacheCtrl:ctrl|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_1|DataCache:dcache|WriteNoBuffer:wc|state
+Name state.00 state.10 state.01 
+state.00 0 0 0 
+state.01 1 0 1 
+state.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_1|DataCache:dcache|NullCache:bp|stateReg
+Name stateReg.00 stateReg.10 stateReg.01 
+stateReg.00 0 0 0 
+stateReg.01 1 0 1 
+stateReg.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_1|DataCache:dcache|StackCache:sc|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_1|DataCache:dcache|DirectMappedCache:dm|stateReg
+Name stateReg.11 stateReg.10 stateReg.01 stateReg.00 
+stateReg.00 0 0 0 0 
+stateReg.01 0 0 1 1 
+stateReg.10 0 1 0 1 
+stateReg.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_1|MCache:icache|MCacheCtrl:ctrl|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_0|DataCache:dcache|WriteNoBuffer:wc|state
+Name state.00 state.10 state.01 
+state.00 0 0 0 
+state.01 1 0 1 
+state.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_0|DataCache:dcache|NullCache:bp|stateReg
+Name stateReg.00 stateReg.10 stateReg.01 
+stateReg.00 0 0 0 
+stateReg.01 1 0 1 
+stateReg.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_0|DataCache:dcache|StackCache:sc|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_0|DataCache:dcache|DirectMappedCache:dm|stateReg
+Name stateReg.11 stateReg.10 stateReg.01 stateReg.00 
+stateReg.00 0 0 0 0 
+stateReg.01 0 0 1 1 
+stateReg.10 0 1 0 1 
+stateReg.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|PatmosCore:cores_0|MCache:icache|MCacheCtrl:ctrl|stateReg
+Name stateReg.110 stateReg.101 stateReg.100 stateReg.011 stateReg.010 stateReg.001 stateReg.000 
+stateReg.000 0 0 0 0 0 0 0 
+stateReg.001 0 0 0 0 0 1 1 
+stateReg.010 0 0 0 0 1 0 1 
+stateReg.011 0 0 0 1 0 0 1 
+stateReg.100 0 0 1 0 0 0 1 
+stateReg.101 0 1 0 0 0 0 1 
+stateReg.110 1 0 0 0 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|hps_reset_manager:hps_reset_manager_0|altera_edge_detector:pulse_warm_reset|state
+Name state.IDLE state.CAPT state.ARM 
+state.IDLE 0 0 0 
+state.ARM 1 0 1 
+state.CAPT 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|hps_reset_manager:hps_reset_manager_0|altera_edge_detector:pulse_cold_reset|state
+Name state.IDLE state.CAPT state.ARM 
+state.IDLE 0 0 0 
+state.ARM 1 0 1 
+state.CAPT 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Arbiter:Arbiter|stateReg
+Name stateReg.00 stateReg.10 stateReg.01 
+stateReg.00 0 0 0 
+stateReg.01 1 0 1 
+stateReg.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|stateReg
+Name stateReg.00 stateReg.10 stateReg.01 
+stateReg.00 0 0 0 
+stateReg.01 1 0 1 
+stateReg.10 1 1 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|DDR3Bridge:ramCtrl|soc_system_ddr3:bb|soc_system_ddr3_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:hps_f2h_sdram0_data_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|SPIMaster_1:SPIMaster_3|state
+Name state.01 
+state.00 0 
+state.01 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_4:Uart_7|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_3:Uart_6|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|SPIMaster_1:SPIMaster_2|state
+Name state.01 
+state.00 0 
+state.01 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_4:Uart_5|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_3:Uart_4|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|SPIMaster_1:SPIMaster_1|state
+Name state.01 
+state.00 0 
+state.01 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_4:Uart_3|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_3:Uart_2|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_2:Uart_1|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|Uart_1:Uart|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|Patmos:Patmos_inst_0|UartCmp:UartCmp|Uart:uart|rx_state
+Name rx_state.11 rx_state.10 rx_state.01 rx_state.00 
+rx_state.00 0 0 0 0 
+rx_state.01 0 0 1 1 
+rx_state.10 0 1 0 1 
+rx_state.11 1 0 0 1 
+
+State Machine - |patmos_top|imu_mpu:imu_mpu_inst_0|state
+Name state.1001 state.1000 state.0111 state.0110 state.0101 state.0100 state.0011 state.0010 state.0001 state.0000 
+state.0000 0 0 0 0 0 0 0 0 0 0 
+state.0001 0 0 0 0 0 0 0 0 1 1 
+state.0010 0 0 0 0 0 0 0 1 0 1 
+state.0011 0 0 0 0 0 0 1 0 0 1 
+state.0100 0 0 0 0 0 1 0 0 0 1 
+state.0101 0 0 0 0 1 0 0 0 0 1 
+state.0110 0 0 0 1 0 0 0 0 0 1 
+state.0111 0 0 1 0 0 0 0 0 0 1 
+state.1000 0 1 0 0 0 0 0 0 0 1 
+state.1001 1 0 0 0 0 0 0 0 0 1 

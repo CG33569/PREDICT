@@ -1,0 +1,44 @@
+\chapter{Introduction}\label{ch:intro}
+
+Patmos is a time-predictable Very Long Instruction word (VLIW) processor developed by Denmark Technical University(DTU). Patmos architecture is a part of the T-Crest Project \cite{bib:t-crest}, whose results were published in  \cite{SCHOEBERL2015449}.  This project describes the construction and development of a quad-copter and its flight controller integrated with the Patmos processor developed by the DTU.
+
+The GitHub repository for the project containing all the test codes and the flight controller code can be found at \cite{bib:multicore_repo}.
+
+\section{Previous works}
+% the Arduino guy
+This project has been built on top of other researchers and people's work. The most relevant reference is the project YMFC-32 from Joop Brooking\cite{bib:brooking}, the STM32 quad-copter is a DIY low-cost drone with common components that uses an Arduino board for the flight controller development. His work has been very relevant for the flight controller development and electronics design.
+
+% Where we got our additional libraries from
+For more specific functionalities, there are also multiple resources for practical Real-Time applications and embedded systems, such as filters, operations or libraries. 
+This is the case of the Kalman filter developed by Lauszus\cite{bib:kalmanAAU} and the GPS library by  McGladdery \cite{bib:gpsLib}, whose work has also been used in this project for filtering sensors data and accessing the GPS data.
+
+
+And in the scenario of using the Patmos architecture, there is Michael Platzer and Emad Jacob Maroun \cite{bib:tu_viena}, who presented a controller for the position of a drone using an IMU. Their work on the I2C communication and corresponding files have been used in this project. 
+
+The fixed point library used in this project is an extension of the code developed by Tim Hartrick and Ivan Voras \cite{bib:fixedpth}.
+
+\section{Problem analysis and project goals}\label{sec:prob_analysis}
+
+The main focus of this project is to develop a drone concept with Patmos that is able to fly, either indoors or outdoors.
+
+The flight controller should also use different features from Patmos and handle them, such as the multi-core for sharing and accessing data between the cores. 
+
+The Patmos libraries has also a variety of functionalities for accessing a data through different communication protocols like Inter-Integrated Circuit (I2C), Serial Peripheral Interface (SPI), 
+Universal asynchronous receiver-transmitter (UART) and also send/receive Pulse Width Modulation (PWM), and the board also counts with a set of General Purpose Input/Output (GPIO)  and an analog signals module. 
+
+The Patmos architecture was provided in a Field Programmable Gate Array (FPGA), model De10-Nano and the libraries of Patmos were configured to work with the De10-Nano board. 
+
+
+Overall, the goals of this project could be listed as follows:
+
+\begin{enumerate}
+    \item Design a complete drone, whose design uses different components required for an autonomous flight.
+    \item Design a flight controller within Patmos architecture that integrates the different components through the different features provided by Patmos.
+    \item The designed drone can take off, fly and land.
+    \item The designed drone must be capable of hovering at a constant altitude and and also maintain its position.
+    \item The design should be scalable, i.e. it can be easily replicated and reused.
+\end{enumerate}
+
+To reach these goals the next chapters in this document shall explain how the problem has been approach. Chapter \ref{ch:hw} presents the hardware design (mechanic and electronics) and Chapter \ref{ch:sw} describes the flight controller design and its features. Then the Chapters \ref{ch:impl} and \ref{ch:test} describes how the design has been implemented and how the libraries of the code provided is structured. Finally, the Chapter \ref{ch:concl} summarizes how the goals have been reached and comments on the project.
+
+Apart from that, there are two additional chapters, Appendixes \ref{app:build} and \ref{app:setup}, which are rather tutorials and more technical explanation about how to mount and assemble the proposed design. These chapters have been written with the idea of being helpful for anybody that wants to replicate this project and/or build on top of it, so this type of reader has instructions and a guideline for doing so.

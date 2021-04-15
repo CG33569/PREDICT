@@ -1,0 +1,27 @@
+\chapter{Conclusion}\label{ch:concl}
+Four drones were developed with all the hardware specifications  required for an autonomous drone as mentioned in the Chapter \ref{ch:hw}, which is the first objective of the project \ref{sec:prob_analysis}. 
+
+A working flight controller was also successfully developed with all the sensors capabilities (with individual test files) in Patmos multi core architecture, which is the second objective of the project \ref{sec:prob_analysis}. 
+
+The drone manual control functionalities were tested as shown in Chapter \ref{ch:test}. The drone can be manually controlled to takeoff, fly. But the landing is not smooth because the gains have to  be fine tuned as mentioned in Subsec. \ref{subsec:altitude_hold}. Hence third objective \ref{sec:prob_analysis} is only partially fulfilled.
+
+The altitude hold and position hold functionalities could not be implemented due to the time constraints and issues faced when working on core 3 of the multi core architecture as mentioned in Subsec.  \ref{subsec:altitude_hold}, \ref{subsec:position_hold} This is because, 
+\begin{itemize}
+    \item GPS and telemetry which could not tested together with flight controller due to issues in core 3. 
+    \item PID values not tuned for barometer altitude control.
+\end{itemize}
+Due to these reasons, the final developed drone is run on multi core architecture with only manual control capability using an IMU. Thus fourth objective \ref{sec:prob_analysis} is not fulfilled.
+
+
+The core 3 of the Patmos architecture, is assigned to send and receive UART data according to the flight controller designed. The data sharing between multiple cores is possible by locking the cores and updating the global variable throughout all cores. But when working on UART data, locking and unlocking cores hangs the entire program.
+
+To explain the reason for issues on core 3, it is necessary to explain briefly how the cores are programmed inside Patmos: the user must  program the handling of access to hardware and low-level resources between the cores. Thus the issue regarding core 3 might be due to, different cores calling to functions that lock and unlock these resources without a predefined schedule or priority.
+
+ This might be also be, due to the fact that the UART data needs to lock the access to a shared library, so it can manipulate using strings and other functions that are relatively slow. This library has also another essential resources for the other cores and therefore, the program loop speed is compromised when the GPS and telemetry are added to the flight controller. 
+
+The developed quad-rotor design is built in a modular way with most of the components being easily replaceable. This facilitated to build multiple drones at the end of this project. Thus the fifth objective \ref{sec:prob_analysis} is fulfilled.
+
+Apart from that, the drone simulation could not be completed, as explained in Section \ref{sec:simulation}, which could have sped up the PID tuning process. However, the communication between the simulator and the board was successful, so the simulation model could be further improved in the future.
+
+This project has an immense scope for improvement, due to all the sensor packages developed for the FPGA. Using the existing resource and extra time, this project can be finished by implementing the remaining functionalities and can also be extended to a full autonomous implementation.
+
