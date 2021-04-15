@@ -31,7 +31,7 @@ Two models (A and B) were developed for this project. The related files are on t
 
 * Simulation model (simulation folder): both models A and B imported into CoppeliaSim simulator and additional dependencies for using the flight controller with the simulator.
 
-![](hardware_design/renderings/render_assemblyB.jpg)
+![](hardware_design/renderings/render_assemblyB.JPG)
 
 
 ##### Software - Flight controller and other applications #####
