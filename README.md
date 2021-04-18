@@ -7,12 +7,21 @@ The project is focused on drone flight controller design and development, using 
 
 
 
+![](flight_video.gif)
+
+
+![](droneLanding.gif)
+
+
 ### Repository structure ###
 
 
 ##### Documentation #####
 
-The complete report is included already in PDF format. However, it is written on Latex and avaliable on the Predict_doc folder and in case of needing to re-build the document:
+An overview and general description of this project is included in Microsoft Power Point format, see the Predict Handover presentation.pptx file.
+
+
+On top of that, the complete report is also included in PDF format, see the Predict_doc.pdf file. For more details, the original Latex files of the document are inside the Predict_doc folder. In case of needing to re-build the document, use doxigen or pdflatex commands, such as:
 
 ```
 cd ~/REPO_LOCATION/PREDICT/Predict_doc && pdflatex main.tex
@@ -51,9 +60,17 @@ The flight controller works as an application on that runs on top of the Patmos 
 * Main flight controller files (Flight_controller_v2.c and PREDICTthread.h).
 
 
+##### Others #####
+
+In case of being new to Patmos architecture, the folder Bash_cmmd contains scripts and configuration files that are useful to download, compile and build the T-Crest repositories and also for downloading C-apps in a de10-nano board. 
+These scripts and files are explained in detail in the Predict documentation, on the Appendices (Chapters 7 and 8).
+
+
 ##### References #####
 
-The main reference for this project is the Arduino Quadcopter project from [Brooking](http://www.brokking.net/ymfc-32_main.html) and part of his project is on the Arduino_project folder.
+The main reference for this project is the Arduino Quadcopter project from [Brooking](http://www.brokking.net/ymfc-32_main.html) and part of his project is on the Arduino_project folder. 
+
+Apart from that, all other references are listed on the Predict project documentation, the Bibliography section.
 
 
 -----------------------------------------------
